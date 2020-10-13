@@ -6,6 +6,7 @@ import main.api.response.PostsResponse;
 import main.api.response.UserPostResponse;
 import main.model.Post;
 import main.model.QPost;
+import org.jsoup.Jsoup;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -22,6 +23,7 @@ import java.util.Optional;
 public class PostService {
     @Autowired
     private PostRepository postRepository;
+    int announceLimit = 150;
 
     //Посчитаем неактивные посты
     public int inactivePostsCounter(){
@@ -55,8 +57,8 @@ public class PostService {
         query.trim();
         query = query.toLowerCase();
 
+        //Ищем поиском в тексте
         Page<Post> pagedPosts = postRepository.findAll(QPost.post.text.toLowerCase().contains(query),pageReq);
-
         ArrayList<PostResponse> postArrayList = new ArrayList<>();
         int localInActiveCounter = 0;
         for (Post post : pagedPosts){
@@ -66,8 +68,10 @@ public class PostService {
             postResponse.setId(post.getId());
             postResponse.setIsActive(post.getIsActive());
             postResponse.setModeratorId(post.getModeratorId());
-            //!Здесь записываем анонс без тегов и с обрезкой (пока просто записываем весь текст)
-            postResponse.setAnnounce(post.getText());
+            //Анонс
+            String announce = Jsoup.parse(post.getText()).text().substring(0, announceLimit);
+            postResponse.setAnnounce(announce);
+
             postResponse.setTimestamp(post.getTime().getTime()/1000);
 
             postResponse.setTitle(post.getTitle());
@@ -81,6 +85,34 @@ public class PostService {
                 localInActiveCounter++;
             }
         }
+
+        //Ищем текст в названии
+        pagedPosts = postRepository.findAll(QPost.post.title.toLowerCase().contains(query),pageReq);
+        for (Post post : pagedPosts){
+            PostResponse postResponse = new PostResponse();
+            UserPostResponse userPostResponse = new UserPostResponse();
+            //Преобразовать post в postresponse
+            postResponse.setId(post.getId());
+            postResponse.setIsActive(post.getIsActive());
+            postResponse.setModeratorId(post.getModeratorId());
+            //Анонс
+            String announce = Jsoup.parse(post.getText()).text().substring(0, announceLimit);
+            postResponse.setAnnounce(announce);
+            postResponse.setTimestamp(post.getTime().getTime()/1000);
+
+            postResponse.setTitle(post.getTitle());
+            postResponse.setViewCount(post.getViewCount());
+            userPostResponse.setName(post.getUser().getName());
+            userPostResponse.setId(post.getUser().getId());
+            postResponse.setUser(userPostResponse);
+
+            //Если искомый текст есть и в названии и в самом тексте, то не добавляем его
+            if (post.getIsActive()==1 && !postArrayList.contains(postResponse)){
+                postArrayList.add(postResponse);
+                localInActiveCounter++;
+            }
+        }
+
         postsResponse.setPosts(postArrayList);
         postsResponse.setCount(localInActiveCounter);
 
@@ -126,8 +158,9 @@ public class PostService {
             postResponse.setId(post.getId());
             postResponse.setIsActive(post.getIsActive());
             postResponse.setModeratorId(post.getModeratorId());
-            //!Здесь записываем анонс без тегов и с обрезкой (пока просто записываем весь текст)
-            postResponse.setAnnounce(post.getText());
+            //Анонс
+            String announce = Jsoup.parse(post.getText()).text().substring(0, announceLimit);
+            postResponse.setAnnounce(announce);
             postResponse.setTimestamp(post.getTime().getTime()/1000);
 
             postResponse.setTitle(post.getTitle());
