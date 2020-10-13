@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 
 @Service
-public class TagsService {
+public class TagService {
     public TagsResponse getTags(){
         TagsResponse tagsResponse = new TagsResponse();
         tagsResponse.setTags(new ArrayList<>());

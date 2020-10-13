@@ -1,10 +1,12 @@
-package main.model;
+package main.Repo;
 
+
+import main.model.Vote;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface UsersRepository extends CrudRepository<Users, Integer> {
+public interface VoteRepository extends CrudRepository<Vote, Integer> {
 
 
 }

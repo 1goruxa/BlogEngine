@@ -1,19 +1,20 @@
 package main.api.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import main.model.Tags;
+import main.model.Tag;
+
 import java.util.ArrayList;
 
 
 public class TagsResponse {
     @JsonProperty("tags")
-    private ArrayList<Tags> tags;
+    private ArrayList<Tag> tags;
 
-    public ArrayList<Tags> getTags() {
+    public ArrayList<Tag> getTags() {
         return tags;
     }
 
-    public void setTags(ArrayList<Tags> tags) {
+    public void setTags(ArrayList<Tag> tags) {
         this.tags = tags;
     }
 }

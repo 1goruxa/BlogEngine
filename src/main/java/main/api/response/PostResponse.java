@@ -1,33 +1,83 @@
 package main.api.response;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import main.model.Posts;
-
-import java.util.ArrayList;
-
 public class PostResponse {
+    private long id;
+    private long timestamp;
+    private UserPostResponse user;
+    private String title;
+    private String announce;
+    //like
+    //dislike
+    //коммент
+    private long viewCount;
 
-    @JsonProperty("count")
-    private int count;
+    //те что дальше по апи не нужны к возврату
+    private int isActive;
+    private long moderatorId;
 
-    @JsonProperty("posts")
-    private ArrayList<Posts> postArrayList;
 
-    public int getCount() {
-        return count;
+
+    public long getId() {
+        return id;
     }
 
-    public void setCount(int count) {
-        this.count = count;
+    public void setId(long id) {
+        this.id = id;
     }
 
-    public ArrayList<Posts> getPostArrayList() {
-        return postArrayList;
+    public int getIsActive() {
+        return isActive;
     }
 
-    public void setPostArrayList(ArrayList<Posts> postArrayList) {
-        this.postArrayList = postArrayList;
+    public void setIsActive(int isActive) {
+        this.isActive = isActive;
     }
 
+    public long getModeratorId() {
+        return moderatorId;
+    }
 
+    public void setModeratorId(long moderatorId) {
+        this.moderatorId = moderatorId;
+    }
+
+    public String getAnnounce() {
+        return announce;
+    }
+
+    public void setAnnounce(String text) {
+        this.announce = text;
+    }
+
+    public long getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(long timestamp) {
+        this.timestamp = timestamp;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public UserPostResponse getUser() {
+        return user;
+    }
+
+    public void setUser(UserPostResponse user) {
+        this.user = user;
+    }
+
+    public long getViewCount() {
+        return viewCount;
+    }
+
+    public void setViewCount(long viewCount) {
+        this.viewCount = viewCount;
+    }
 }

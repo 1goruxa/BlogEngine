@@ -1,13 +1,11 @@
 package main.model;
 
-import org.dom4j.tree.AbstractEntity;
-import org.springframework.beans.factory.annotation.Value;
-
 import javax.persistence.*;
 import java.util.Date;
+import java.util.Set;
 
-@Entity
-public class Posts extends AbstractEntity {
+@Entity(name="posts")
+public class Post {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
@@ -20,11 +18,22 @@ public class Posts extends AbstractEntity {
     private Date time;
     private String title;
 
-    @Column(name="user_id")
-    private int user;
+
+    @ManyToOne(targetEntity=User.class,optional=false)
+    @JoinColumn(name="user_id", referencedColumnName = "id")
+    private User user;
 
     @Column(name="view_count")
     private int viewCount;
+
+    @OneToMany(targetEntity = Comment.class, mappedBy = "post", fetch = FetchType.EAGER)
+    private Set<Comment> commentsSet;
+
+    @OneToMany(targetEntity = Vote.class, mappedBy = "post", fetch = FetchType.EAGER)
+    private Set<Vote> votesSet;
+
+    @OneToMany(targetEntity = Tag2Post.class, mappedBy = "post")
+    private Set<Tag2Post> tag2PostSet;
 
     public int getId() {
         return id;
@@ -74,11 +83,11 @@ public class Posts extends AbstractEntity {
         this.title = title;
     }
 
-    public int getUser() {
+    public User getUser() {
         return user;
     }
 
-    public void setUser(int user) {
+    public void setUser(User user) {
         this.user = user;
     }
 

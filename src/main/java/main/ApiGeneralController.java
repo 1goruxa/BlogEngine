@@ -4,22 +4,21 @@ import main.api.response.InitResponse;
 import main.api.response.SettingsResponse;
 import main.api.response.TagsResponse;
 import main.service.SettingsService;
-import main.service.TagsService;
+import main.service.TagService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 
 @RestController
-//@RequestMapping(value="/api", method= RequestMethod.GET, produces={"application/json; charset=UTF-8"})
 public class ApiGeneralController {
     private final SettingsService settingsService;
     private final InitResponse initResponse;
-    private final TagsService tagsService;
+    private final TagService tagService;
 
-    public ApiGeneralController(SettingsService settingsService, InitResponse initResponse, TagsService tagsService) {
+    public ApiGeneralController(SettingsService settingsService, InitResponse initResponse, TagService tagService) {
         this.settingsService = settingsService;
         this.initResponse = initResponse;
-        this.tagsService = tagsService;
+        this.tagService = tagService;
     }
 
     @GetMapping("/api/settings")
@@ -36,7 +35,7 @@ public class ApiGeneralController {
 
     @GetMapping("/api/tag")
     private TagsResponse showTags(){
-        return tagsService.getTags();
+        return tagService.getTags();
     }
 
 
