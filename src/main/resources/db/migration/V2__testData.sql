@@ -4,7 +4,7 @@ insert into posts (is_active,moderator_id,text,time,title,user_id,view_count) va
 insert into posts (is_active,moderator_id,text,time,title,user_id,view_count) values('1','1','STRING_QUIT_BLUESTACKS = Выход','2020-03-01 00:00:00','second','2','5');
 insert into posts (is_active,moderator_id,text,time,title,user_id,view_count) values('1','1','STRING_UPLOAD_DEBUG_LOGS = Сообщить о проблеме','2020-06-01 00:00:00','third','4','8');
 insert into posts (is_active,moderator_id,text,time,title,user_id,view_count) values('0','1','STRING_INSTALL_UPDATES = Установить обновления','2020-07-01 00:00:00','fourth','2','15');
-insert into posts (is_active,moderator_id,text,time,title,user_id,view_count) values('1','1','STRING_APPS = Приложения','2020-01-11 00:00:00','fifth','1','33');
+insert into posts (is_active,moderator_id,text,time,title,user_id,view_count) values('1','1','<h1>STRING_APPS</h1> = <b>Приложения</b>','2020-01-11 00:00:00','fifth','1','33');
 insert into posts (is_active,moderator_id,text,time,title,user_id,view_count) values('0','1','STRING_APP = Приложение','2020-01-21 00:00:00','sixth','8','2');
 insert into posts (is_active,moderator_id,text,time,title,user_id,view_count) values('1','1','STRING_INSTALLED = установлены','2020-06-01 00:00:00','seventh','9','11');
 insert into posts (is_active,moderator_id,text,time,title,user_id,view_count) values('1','1','STRING_FULL_SCREEN_BUTTON_TOOLTIP = Перейти в полноэкранный режим','2020-11-22 00:00:00','eighth','5','4');

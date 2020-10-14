@@ -1,11 +1,10 @@
 package main.service;
 
+import main.Repo.CommentRepository;
 import main.Repo.PostRepository;
-import main.api.response.PostResponse;
-import main.api.response.PostsResponse;
-import main.api.response.UserPostResponse;
-import main.model.Post;
-import main.model.QPost;
+import main.Repo.TagRepository;
+import main.api.response.*;
+import main.model.*;
 import org.jsoup.Jsoup;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -23,6 +22,10 @@ import java.util.Optional;
 public class PostService {
     @Autowired
     private PostRepository postRepository;
+    @Autowired
+    private CommentRepository commentRepository;
+    @Autowired
+    private TagRepository tagRepository;
     int announceLimit = 150;
 
     //Посчитаем неактивные посты
@@ -40,9 +43,60 @@ public class PostService {
     //Возврат поста по ID
     public ResponseEntity<Post> getPostById(int id){
         Optional<Post> optionalPosts = postRepository.findById(id);
+        PostByIdResponse postByIdResponse = new PostByIdResponse();
+        UserPostResponse userPostResponse = new UserPostResponse();
+        CommentPostResponse commentPostResponse = new CommentPostResponse();
+        UserCommentResponse userCommentResponse = new UserCommentResponse();
         if (optionalPosts.isPresent()){
-            return new ResponseEntity(optionalPosts.get(), HttpStatus.OK);
-            //!Создать новый объект, подтягивающий все поля для правильного ответа по апи
+            postByIdResponse.setId(optionalPosts.get().getId());
+            postByIdResponse.setTimestamp(optionalPosts.get().getTime().getTime()/1000);
+
+            if (optionalPosts.get().getIsActive()==1){
+                postByIdResponse.setActive(true);
+            }
+            else{
+                postByIdResponse.setActive(false);
+            }
+
+            userPostResponse.setId(optionalPosts.get().getUser().getId());
+            userPostResponse.setName(optionalPosts.get().getUser().getName());
+            postByIdResponse.setUser(userPostResponse);
+
+            postByIdResponse.setTitle(optionalPosts.get().getTitle());
+            postByIdResponse.setText(optionalPosts.get().getText());
+
+            postByIdResponse.setViewCount(optionalPosts.get().getViewCount());
+
+            //Ищем и добавляем комменты
+            Iterable<Comment> commentIterable = commentRepository.findAll(QComment.comment.post.id.eq(optionalPosts.get().getId()));
+            ArrayList<CommentPostResponse> commentPostResponseArrayList = new ArrayList<>();
+            //преобразовать в CommentPostResponse
+            for(Comment c : commentIterable){
+                CommentPostResponse cpResponse = new CommentPostResponse();
+                UserCommentResponse ucResponse = new UserCommentResponse();
+                cpResponse.setId(c.getId());
+                cpResponse.setText(c.getText());
+                cpResponse.setTimestamp(c.getTime().getTime()/1000);
+
+                ucResponse.setId(c.getUser().getId());
+                ucResponse.setName(c.getUser().getName());
+                ucResponse.setPhoto(c.getUser().getPhoto());
+
+                cpResponse.setUser(ucResponse);
+                commentPostResponseArrayList.add(cpResponse);
+            }
+            postByIdResponse.setComments(commentPostResponseArrayList);
+
+            //! Лайки и дизлайки доделать, тэги
+            postByIdResponse.setLikeCount(1);
+            postByIdResponse.setDislikeCount(1);
+            ArrayList<String> tmpArray = new ArrayList<>();
+            tmpArray.add("TMP_TAG");
+            postByIdResponse.setTags(tmpArray);
+
+
+            return new ResponseEntity(postByIdResponse, HttpStatus.OK);
+
         }
         else return ResponseEntity.status(HttpStatus.OK).body(null);
     }
@@ -69,7 +123,10 @@ public class PostService {
             postResponse.setIsActive(post.getIsActive());
             postResponse.setModeratorId(post.getModeratorId());
             //Анонс
-            String announce = Jsoup.parse(post.getText()).text().substring(0, announceLimit);
+            String announce = Jsoup.parse(post.getText()).text();
+            if (announce.length() > 150 ) {
+                announce = announce.substring(0,150);
+            }
             postResponse.setAnnounce(announce);
 
             postResponse.setTimestamp(post.getTime().getTime()/1000);
@@ -96,7 +153,10 @@ public class PostService {
             postResponse.setIsActive(post.getIsActive());
             postResponse.setModeratorId(post.getModeratorId());
             //Анонс
-            String announce = Jsoup.parse(post.getText()).text().substring(0, announceLimit);
+            String announce = Jsoup.parse(post.getText()).text();
+            if (announce.length() > 150 ) {
+                announce = announce.substring(0,150);
+            }
             postResponse.setAnnounce(announce);
             postResponse.setTimestamp(post.getTime().getTime()/1000);
 
@@ -133,11 +193,11 @@ public class PostService {
             pageReq = PageRequest.of(offset/limit,limit,Sort.Direction.DESC,"time");
         }
         else if (mode.equals("best")){
-            pageReq = PageRequest.of(offset/limit,limit,Sort.Direction.ASC,"commentsSet");
+            pageReq = PageRequest.of(offset/limit,limit,Sort.Direction.ASC,"votesSet");
             // !       best - сортировать по убыванию количества лайков
         }
         else if (mode.equals("popular")){
-            pageReq = PageRequest.of(offset/limit,limit,Sort.Direction.ASC,"votesSet");
+            pageReq = PageRequest.of(offset/limit,limit,Sort.Direction.ASC,"commentsSet");
             // !       popular - сортировать по убыванию количества комментариев
         }
         else{
@@ -159,7 +219,10 @@ public class PostService {
             postResponse.setIsActive(post.getIsActive());
             postResponse.setModeratorId(post.getModeratorId());
             //Анонс
-            String announce = Jsoup.parse(post.getText()).text().substring(0, announceLimit);
+            String announce = Jsoup.parse(post.getText()).text();
+            if (announce.length() > 150 ) {
+                announce = announce.substring(0,150);
+            }
             postResponse.setAnnounce(announce);
             postResponse.setTimestamp(post.getTime().getTime()/1000);
 
