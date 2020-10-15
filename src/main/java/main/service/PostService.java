@@ -2,6 +2,7 @@ package main.service;
 
 import main.Repo.CommentRepository;
 import main.Repo.PostRepository;
+import main.Repo.Tag2PostRepository;
 import main.Repo.TagRepository;
 import main.api.response.*;
 import main.model.*;
@@ -26,6 +27,8 @@ public class PostService {
     private CommentRepository commentRepository;
     @Autowired
     private TagRepository tagRepository;
+    @Autowired
+    private Tag2PostRepository tag2PostRepository;
     int announceLimit = 150;
 
     //Посчитаем неактивные посты
@@ -87,17 +90,39 @@ public class PostService {
             }
             postByIdResponse.setComments(commentPostResponseArrayList);
 
-            //! Лайки и дизлайки доделать, тэги
+
+            // Ищем связанные теги
+            ArrayList<String> tagArray = new ArrayList<>();
+            Iterable<Tag2Post> tag2PostsIterable = tag2PostRepository.findAll(QTag2Post.tag2Post.post.id.eq(optionalPosts.get().getId()));
+            ArrayList<Tag2Post> tag2PostArrayList = new ArrayList<>();
+
+            for (Tag2Post t : tag2PostsIterable){
+                tag2PostArrayList.add(t);
+            }
+
+            tag2PostArrayList.forEach(t ->{
+                ArrayList<Tag> singleTagArray = new ArrayList<>();
+                Iterable<Tag> tagIterable =  tagRepository.findAll(QTag.tag.id.eq(t.getId()));
+                for (Tag tag : tagIterable){
+                    singleTagArray.add(tag);
+                }
+
+                for (Tag tag : singleTagArray){
+                    tagArray.add(tag.getText());
+                }
+            });
+
+            postByIdResponse.setTags(tagArray);
+
+
+            //! Лайки и дизлайки доделать
             postByIdResponse.setLikeCount(1);
             postByIdResponse.setDislikeCount(1);
-            ArrayList<String> tmpArray = new ArrayList<>();
-            tmpArray.add("TMP_TAG");
-            postByIdResponse.setTags(tmpArray);
-
 
             return new ResponseEntity(postByIdResponse, HttpStatus.OK);
 
         }
+        //! Тут вернуть 404
         else return ResponseEntity.status(HttpStatus.OK).body(null);
     }
 

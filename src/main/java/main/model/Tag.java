@@ -12,7 +12,7 @@ public class Tag {
     @OneToMany(targetEntity = Tag2Post.class, mappedBy = "tag")
     private Set<Tag2Post> tag2PostSet;
 
-    private String name;
+    private String text;
 
     public int getId() {
         return id;
@@ -22,11 +22,19 @@ public class Tag {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public Set<Tag2Post> getTag2PostSet() {
+        return tag2PostSet;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setTag2PostSet(Set<Tag2Post> tag2PostSet) {
+        this.tag2PostSet = tag2PostSet;
+    }
+
+    public String getText() {
+        return text;
+    }
+
+    public void setText(String text) {
+        this.text = text;
     }
 }
