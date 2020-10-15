@@ -1,9 +1,6 @@
 package main.service;
 
-import main.Repo.CommentRepository;
-import main.Repo.PostRepository;
-import main.Repo.Tag2PostRepository;
-import main.Repo.TagRepository;
+import main.Repo.*;
 import main.api.response.*;
 import main.model.*;
 import org.jsoup.Jsoup;
@@ -15,9 +12,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @Service
 public class PostService {
@@ -29,6 +26,8 @@ public class PostService {
     private TagRepository tagRepository;
     @Autowired
     private Tag2PostRepository tag2PostRepository;
+    @Autowired
+    private VoteRepository voteRepository;
     int announceLimit = 150;
 
     //Посчитаем неактивные посты
@@ -44,6 +43,9 @@ public class PostService {
     }
 
     //Возврат поста по ID
+    //! На открытии поста увеличить view_count
+    //! На выводе списка постов не возвращается кол-во комментов
+    //! Теперь можно правильно сортировать вывод по лайкам и коментам
     public ResponseEntity<Post> getPostById(int id){
         Optional<Post> optionalPosts = postRepository.findById(id);
         PostByIdResponse postByIdResponse = new PostByIdResponse();
@@ -74,6 +76,7 @@ public class PostService {
             Iterable<Comment> commentIterable = commentRepository.findAll(QComment.comment.post.id.eq(optionalPosts.get().getId()));
             ArrayList<CommentPostResponse> commentPostResponseArrayList = new ArrayList<>();
             //преобразовать в CommentPostResponse
+            //! Разобраться с наследованием комментов
             for(Comment c : commentIterable){
                 CommentPostResponse cpResponse = new CommentPostResponse();
                 UserCommentResponse ucResponse = new UserCommentResponse();
@@ -99,25 +102,38 @@ public class PostService {
             for (Tag2Post t : tag2PostsIterable){
                 tag2PostArrayList.add(t);
             }
-
             tag2PostArrayList.forEach(t ->{
                 ArrayList<Tag> singleTagArray = new ArrayList<>();
                 Iterable<Tag> tagIterable =  tagRepository.findAll(QTag.tag.id.eq(t.getId()));
                 for (Tag tag : tagIterable){
                     singleTagArray.add(tag);
                 }
-
                 for (Tag tag : singleTagArray){
                     tagArray.add(tag.getText());
                 }
             });
-
             postByIdResponse.setTags(tagArray);
 
 
-            //! Лайки и дизлайки доделать
-            postByIdResponse.setLikeCount(1);
-            postByIdResponse.setDislikeCount(1);
+            //Лайки и дизлайки доделать
+            Iterable<Vote> voteIterable = voteRepository.findAll(QVote.vote.post.id.eq(optionalPosts.get().getId()));
+            ArrayList<Vote> voteArrayList = new ArrayList<>();
+            voteIterable.forEach(v ->{
+                voteArrayList.add(v);
+            });
+            AtomicInteger likeCounter = new AtomicInteger();
+            AtomicInteger dislikeCounter = new AtomicInteger();
+            voteArrayList.forEach(v ->{
+                if (v.getValue().equals("1")){
+                    likeCounter.getAndIncrement();
+                }
+                else{
+                    dislikeCounter.getAndIncrement();
+                }
+            });
+
+            postByIdResponse.setLikeCount(likeCounter.get());
+            postByIdResponse.setDislikeCount(dislikeCounter.get());
 
             return new ResponseEntity(postByIdResponse, HttpStatus.OK);
 
