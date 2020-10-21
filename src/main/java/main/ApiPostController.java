@@ -3,6 +3,7 @@ package main;
 import main.Repo.PostRepository;
 import main.api.response.PostsResponse;
 import main.Repo.UserRepository;
+import main.api.response.TagsResponse;
 import main.service.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -38,4 +39,10 @@ public class ApiPostController {
         return postService.searchAndShowPosts(offset, limit, query);
     }
 
+    @GetMapping("api/post/byTag")
+    public PostsResponse postsByTag(@RequestParam int offset, @RequestParam int limit, @RequestParam String tag){
+        return postService.searchPostsByTag(offset, limit, tag);
+    }
+
+    //! byDate
 }

@@ -6,16 +6,10 @@ public class PostResponse {
     private UserPostResponse user;
     private String title;
     private String announce;
-    //like
-    //dislike
-    //коммент
+    private int likeCount;
+    private int dislikeCount;
+    private int commentCount;
     private long viewCount;
-
-    //те что дальше по апи не нужны к возврату
-    private int isActive;
-    private long moderatorId;
-
-
 
     public long getId() {
         return id;
@@ -23,22 +17,6 @@ public class PostResponse {
 
     public void setId(long id) {
         this.id = id;
-    }
-
-    public int getIsActive() {
-        return isActive;
-    }
-
-    public void setIsActive(int isActive) {
-        this.isActive = isActive;
-    }
-
-    public long getModeratorId() {
-        return moderatorId;
-    }
-
-    public void setModeratorId(long moderatorId) {
-        this.moderatorId = moderatorId;
     }
 
     public String getAnnounce() {
@@ -67,6 +45,30 @@ public class PostResponse {
 
     public UserPostResponse getUser() {
         return user;
+    }
+
+    public int getLikeCount() {
+        return likeCount;
+    }
+
+    public void setLikeCount(int likeCount) {
+        this.likeCount = likeCount;
+    }
+
+    public int getDislikeCount() {
+        return dislikeCount;
+    }
+
+    public void setDislikeCount(int dislikeCount) {
+        this.dislikeCount = dislikeCount;
+    }
+
+    public int getCommentCount() {
+        return commentCount;
+    }
+
+    public void setCommentCount(int commentCount) {
+        this.commentCount = commentCount;
     }
 
     public void setUser(UserPostResponse user) {

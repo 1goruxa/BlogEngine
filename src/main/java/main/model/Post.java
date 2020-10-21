@@ -14,6 +14,10 @@ public class Post {
     private int isActive;
     @Column(name="moderator_id")
     private int moderatorId;
+
+    @Column(name="moderation_status")
+    private String moderationStatus;
+
     private String text;
     private Date time;
     private String title;
@@ -98,29 +102,37 @@ public class Post {
     public void setViewCount(int viewCount) {
         this.viewCount = viewCount;
     }
+
+    public String getModerationStatus() {
+        return moderationStatus;
+    }
+
+    public void setModerationStatus(String moderationStatus) {
+        this.moderationStatus = moderationStatus;
+    }
+
+    public Set<Comment> getCommentsSet() {
+        return commentsSet;
+    }
+
+    public void setCommentsSet(Set<Comment> commentsSet) {
+        this.commentsSet = commentsSet;
+    }
+
+    public Set<Vote> getVotesSet() {
+        return votesSet;
+    }
+
+    public void setVotesSet(Set<Vote> votesSet) {
+        this.votesSet = votesSet;
+    }
+
+    public Set<Tag2Post> getTag2PostSet() {
+        return tag2PostSet;
+    }
+
+    public void setTag2PostSet(Set<Tag2Post> tag2PostSet) {
+        this.tag2PostSet = tag2PostSet;
+    }
 }
 
-
-//id int AI PK
-//        is_active int
-//        moderator_id int
-//        text varchar(255)
-//        time datetime(6)
-//        title varchar(255)
-//        user_id int
-//        view_count int
-
-
-//"id": 345,
-//        "timestamp": 1592338706,
-//        "user":
-//        {
-//        "id": 88,
-//        "name": "Дмитрий Петров"
-//        },
-//        "title": "Заголовок поста",
-//        "announce": "Текст анонса поста без HTML-тэгов",
-//        "likeCount": 36,
-//        "dislikeCount": 3,
-//        "commentCount": 15,
-//        "viewCount": 55
