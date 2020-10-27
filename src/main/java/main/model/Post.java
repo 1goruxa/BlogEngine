@@ -2,6 +2,7 @@ package main.model;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 
 @Entity(name="posts")
@@ -31,13 +32,13 @@ public class Post {
     private int viewCount;
 
     @OneToMany(targetEntity = Comment.class, mappedBy = "post", fetch = FetchType.EAGER)
-    private Set<Comment> commentsSet;
+    private List<Comment> commentsList;
 
     @OneToMany(targetEntity = Vote.class, mappedBy = "post", fetch = FetchType.EAGER)
     private Set<Vote> votesSet;
 
     @OneToMany(targetEntity = Tag2Post.class, mappedBy = "post")
-    private Set<Tag2Post> tag2PostSet;
+    private List<Tag2Post> tag2PostList;
 
     public int getId() {
         return id;
@@ -61,6 +62,14 @@ public class Post {
 
     public void setModeratorId(int moderatorId) {
         this.moderatorId = moderatorId;
+    }
+
+    public String getModerationStatus() {
+        return moderationStatus;
+    }
+
+    public void setModerationStatus(String moderationStatus) {
+        this.moderationStatus = moderationStatus;
     }
 
     public String getText() {
@@ -103,20 +112,12 @@ public class Post {
         this.viewCount = viewCount;
     }
 
-    public String getModerationStatus() {
-        return moderationStatus;
+    public List<Comment> getCommentsList() {
+        return commentsList;
     }
 
-    public void setModerationStatus(String moderationStatus) {
-        this.moderationStatus = moderationStatus;
-    }
-
-    public Set<Comment> getCommentsSet() {
-        return commentsSet;
-    }
-
-    public void setCommentsSet(Set<Comment> commentsSet) {
-        this.commentsSet = commentsSet;
+    public void setCommentsList(List<Comment> commentsList) {
+        this.commentsList = commentsList;
     }
 
     public Set<Vote> getVotesSet() {
@@ -127,12 +128,12 @@ public class Post {
         this.votesSet = votesSet;
     }
 
-    public Set<Tag2Post> getTag2PostSet() {
-        return tag2PostSet;
+    public List<Tag2Post> getTag2PostList() {
+        return tag2PostList;
     }
 
-    public void setTag2PostSet(Set<Tag2Post> tag2PostSet) {
-        this.tag2PostSet = tag2PostSet;
+    public void setTag2PostList(List<Tag2Post> tag2PostList) {
+        this.tag2PostList = tag2PostList;
     }
 }
 

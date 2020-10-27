@@ -1,14 +1,17 @@
 package main.Repo;
-
-import main.model.Comment;
 import main.model.Tag2Post;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.querydsl.QuerydslPredicateExecutor;
-import org.springframework.data.repository.CrudRepository;
+
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-@Repository
-public interface Tag2PostRepository extends JpaRepository<Tag2Post, Integer>, QuerydslPredicateExecutor<Tag2Post> {
+import java.util.List;
 
+
+@Repository
+public interface Tag2PostRepository extends JpaRepository<Tag2Post, Integer> {
+
+    @Query(value = "SELECT COUNT(post_id) FROM tag2post WHERE tagid = :id", nativeQuery = true)
+    int countTagsById(int id);
 
 }

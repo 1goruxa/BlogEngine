@@ -1,13 +1,15 @@
 package main.Repo;
 
 import main.model.Comment;
+import main.model.Post;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.querydsl.QuerydslPredicateExecutor;
-
 import org.springframework.stereotype.Repository;
 
-@Repository
-public interface CommentRepository extends JpaRepository<Comment, Integer>, QuerydslPredicateExecutor<Comment> {
+import java.util.List;
 
+@Repository
+public interface CommentRepository extends JpaRepository<Comment, Integer> {
+
+    List<Comment> findAllByPost(Post post);
 
 }

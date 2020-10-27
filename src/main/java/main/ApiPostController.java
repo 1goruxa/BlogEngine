@@ -23,9 +23,11 @@ public class ApiPostController {
     public ApiPostController(PostService postService) { this.postService = postService; }
 
     @GetMapping("/api/post")
-    private PostsResponse postResponse(@RequestParam int offset, @RequestParam int limit, @RequestParam String mode) {
+    private PostsResponse postResponse(@RequestParam(required = false, defaultValue = "0") int offset,
+                                       @RequestParam(required = false, defaultValue = "0") int limit,
+                                       @RequestParam(required = false, defaultValue = "recent") String mode) {
 
-        return postService.showPosts(offset, limit, mode);
+        return postService.getPosts(offset, limit, mode);
     }
 
     @GetMapping("/api/post/{id}")
@@ -35,14 +37,23 @@ public class ApiPostController {
     }
 
     @GetMapping("/api/post/search")
-    private PostsResponse postSearchResponse(@RequestParam int offset, @RequestParam int limit, @RequestParam String query){
-        return postService.searchAndShowPosts(offset, limit, query);
+    private PostsResponse postSearchResponse(@RequestParam(required = false, defaultValue = "0") int offset,
+                                             @RequestParam(required = false, defaultValue = "0") int limit,
+                                             @RequestParam(required = false, defaultValue = "") String query){
+        return postService.searchAndGetPosts(offset, limit, query);
     }
 
     @GetMapping("api/post/byTag")
-    public PostsResponse postsByTag(@RequestParam int offset, @RequestParam int limit, @RequestParam String tag){
+    public PostsResponse postsByTag(@RequestParam(required = false, defaultValue = "0") int offset,
+                                    @RequestParam(required = false, defaultValue = "0") int limit,
+                                    @RequestParam(required = false, defaultValue = "") String tag){
         return postService.searchPostsByTag(offset, limit, tag);
     }
 
-    //! byDate
+    @GetMapping("api/post/byDate")
+    public PostsResponse postsByDate(@RequestParam(required = false, defaultValue = "0") int offset,
+                                     @RequestParam(required = false, defaultValue = "0") int limit,
+                                     @RequestParam(required = false, defaultValue = "") String date){
+        return postService.searchPostsByDate(offset, limit, date);
+    }
 }

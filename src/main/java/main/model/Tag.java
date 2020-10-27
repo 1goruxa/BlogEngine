@@ -1,7 +1,8 @@
 package main.model;
 
 import javax.persistence.*;
-import java.util.Set;
+import java.util.List;
+
 
 @Entity(name = "tags")
 public class Tag {
@@ -10,7 +11,7 @@ public class Tag {
     private int id;
 
     @OneToMany(targetEntity = Tag2Post.class, mappedBy = "tag")
-    private Set<Tag2Post> tag2PostSet;
+    private List<Tag2Post> tag2PostList;
 
     private String text;
 
@@ -22,12 +23,12 @@ public class Tag {
         this.id = id;
     }
 
-    public Set<Tag2Post> getTag2PostSet() {
-        return tag2PostSet;
+    public List<Tag2Post> getTag2PostList() {
+        return tag2PostList;
     }
 
-    public void setTag2PostSet(Set<Tag2Post> tag2PostSet) {
-        this.tag2PostSet = tag2PostSet;
+    public void setTag2PostList(List<Tag2Post> tag2PostList) {
+        this.tag2PostList = tag2PostList;
     }
 
     public String getText() {
