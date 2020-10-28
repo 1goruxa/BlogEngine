@@ -52,7 +52,7 @@ public class CaptchaService {
         String secretCode = String.format("%05d", num);
 
         num = random.nextInt(100000);
-        String code = String.format("%05d", num);;
+        String code = String.format("%05d", num);
         Date time = new Date();
         captchaRepository.killOldCaptchas();
         captchaRepository.createCaptcha(code, secretCode, time);

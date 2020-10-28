@@ -1,4 +1,5 @@
 package main.Repo;
+import main.model.Captcha;
 import main.model.Post;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -10,7 +11,7 @@ import javax.transaction.Transactional;
 import java.util.Date;
 
 @Repository
-public interface CaptchaRepository extends JpaRepository<Post, Integer> {
+public interface CaptchaRepository extends JpaRepository<Captcha, Integer> {
 
     @Transactional
     @Modifying
@@ -24,5 +25,7 @@ public interface CaptchaRepository extends JpaRepository<Post, Integer> {
     @Modifying
     @Query(value="DELETE FROM captcha_codes WHERE time < (NOW() - INTERVAL 60 MINUTE)", nativeQuery = true)
     void killOldCaptchas();
+
+    Captcha findOneBySecretCode(String secretCode);
 
 }

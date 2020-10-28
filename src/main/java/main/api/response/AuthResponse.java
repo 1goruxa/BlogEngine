@@ -7,6 +7,8 @@ public class AuthResponse {
     @JsonProperty("result")
     private boolean result;
 
+    private LoginUserResponse user;
+
     public boolean isResult() {
         return result;
     }

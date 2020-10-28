@@ -56,4 +56,6 @@ public interface PostRepository extends JpaRepository<Post, Integer>{
 
     int countAllByIsActiveAndModerationStatusAndTimeLessThan(int isActive, String moderationStatus,Date time);
 
+    int countAllByModerationStatus(String moderationStatus);
+
 }
