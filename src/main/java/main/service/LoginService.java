@@ -39,21 +39,29 @@ public class LoginService {
     }
 
 
-    public LoginResponse login(LoginRequest loginRequest) throws NullPointerException {
+    public LoginResponse login(LoginRequest loginRequest){
 
         LoginResponse loginResponse = new LoginResponse();
+
         //Обрабатываем запрос и формируем ответ
 
-        Authentication auth = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
+        System.out.println(loginRequest.getEmail() + " " + loginRequest.getPassword());
+
+        Authentication auth = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
+
+
         SecurityContextHolder.getContext().setAuthentication(auth);
-
-            UserDetails userDetails = (UserDetails) auth.getPrincipal();
-
-            User currentUser = userRepository.findOneByEmail(userDetails.getUsername()).orElseThrow(() -> new NullPointerException("USER is NULL"));
+        UserDetails userDetails = (UserDetails) auth.getPrincipal();
+        User currentUser = userRepository.findOneByEmail(userDetails.getUsername()).orElseThrow(() -> new NullPointerException("USER is NULL"));
+        if (currentUser != null) {
             LoginUserResponse loginUserResponse = mapUserToLoginUserResponse(currentUser);
             loginResponse.setUser(loginUserResponse);
             loginResponse.setResult(true);
+        }
+        else{
+            loginResponse.setResult(false);
+        }
+
 
         return loginResponse;
     }

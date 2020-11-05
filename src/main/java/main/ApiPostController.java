@@ -7,6 +7,7 @@ import main.api.response.TagsResponse;
 import main.service.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -21,6 +22,7 @@ public class ApiPostController {
     private final PostService postService;
 
     public ApiPostController(PostService postService) { this.postService = postService; }
+
 
     @GetMapping("/api/post")
     private PostsResponse postResponse(@RequestParam(required = false, defaultValue = "0") int offset,

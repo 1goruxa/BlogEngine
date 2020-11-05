@@ -8,6 +8,7 @@ import main.api.response.RegisterResponse;
 import main.service.CaptchaService;
 import main.service.LoginService;
 import main.service.RegisterService;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -66,6 +67,7 @@ public class ApiAuthController {
     }
 
     @PostMapping("/api/auth/login")
+    @PreAuthorize("hasAnyAuthority()")
     private LoginResponse loginResponse(@RequestBody LoginRequest data){
         return loginService.login(data);
     }
