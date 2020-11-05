@@ -4,8 +4,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class LoginRequest {
     @JsonProperty("e_mail")
-    String email;
-    String password;
+    private String email;
+    private String password;
 
     public String getEmail() {
         return email;

@@ -31,6 +31,17 @@ public class User {
     @OneToMany(targetEntity = Vote.class, mappedBy = "user", fetch = FetchType.EAGER)
     private Set<Vote> votesSet;
 
+    //Роли пользователя
+    public Role getRole(){
+        if (isModerator == 1){
+            return Role.MODERATOR;
+        }
+        else{
+            return Role.USER;
+        }
+    }
+
+
     public String getName() {
         return name;
     }

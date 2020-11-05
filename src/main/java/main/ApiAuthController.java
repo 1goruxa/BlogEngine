@@ -2,7 +2,6 @@ package main;
 
 import main.api.request.LoginRequest;
 import main.api.request.RegisterRequest;
-import main.api.response.AuthResponse;
 import main.api.response.CaptchaResponse;
 import main.api.response.LoginResponse;
 import main.api.response.RegisterResponse;
@@ -30,12 +29,8 @@ public class ApiAuthController {
     }
 
     @GetMapping("/api/auth/check")
-    private AuthResponse authCheck(){
-        //Убрать это отсюда потом в сервис
-        AuthResponse authResponse = new AuthResponse();
-        authResponse.setResult(false);
-
-        return authResponse;
+    private LoginResponse authCheck(){
+        return loginService.authCheck();
 
         //Метод возвращает информацию о текущем авторизованном пользователе, если он авторизован.
         //Он должен проверять, сохранён ли идентификатор текущей сессии в списке авторизованных.
@@ -58,7 +53,6 @@ public class ApiAuthController {
         //{
         //	"result": false
         //}
-
     }
 
     @GetMapping("/api/auth/captcha")

@@ -8,6 +8,8 @@ import main.api.response.RegisterResponse;
 import main.model.Captcha;
 import main.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.security.SecureRandom;
@@ -20,6 +22,8 @@ public class RegisterService {
     private UserRepository userRepository;
     @Autowired
     private CaptchaRepository captchaRepository;
+    private PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(12);
+
 
     public RegisterResponse register(RegisterRequest registerRequest){
         RegisterResponse registerResponse = new RegisterResponse();
@@ -55,7 +59,8 @@ public class RegisterService {
             User user = new User();
             user.setName(registerRequest.getName());
             user.setEmail(registerRequest.geteMail());
-            user.setPassword(registerRequest.getPassword());
+            //пароль зашифрован BCrypt
+            user.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
             user.setRegTime(new Date());
             user.setPhoto("");
 
@@ -69,6 +74,7 @@ public class RegisterService {
             user.setCode(code);
 
             userRepository.save(user);
+
         }
 
         return registerResponse;
