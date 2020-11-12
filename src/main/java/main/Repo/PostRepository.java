@@ -1,5 +1,6 @@
 package main.Repo;
 import main.model.Post;
+import main.model.User;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -57,5 +58,29 @@ public interface PostRepository extends JpaRepository<Post, Integer>{
     int countAllByIsActiveAndModerationStatusAndTimeLessThan(int isActive, String moderationStatus,Date time);
 
     int countAllByModerationStatus(String moderationStatus);
+
+    @Query(value="SELECT * FROM posts WHERE user_id = :user AND is_active = 0", nativeQuery = true)
+    List<Post> getMyInactivePosts(Pageable pageable, int user);
+
+    @Query(value = "select COUNT(*) from posts WHERE user_id = :user AND is_active = 0", nativeQuery = true)
+    int countMyInactivePosts(int user);
+
+    @Query(value="SELECT * FROM posts WHERE user_id = :user AND is_active = 1 AND moderation_status = 'NEW'", nativeQuery = true)
+    List<Post> getMyPendingPosts(Pageable pageable, int user);
+
+    @Query(value="SELECT COUNT(*) FROM posts WHERE user_id = :user AND is_active = 1 AND moderation_status = 'NEW'", nativeQuery = true)
+    int countMyPendingPosts(int user);
+
+    @Query(value="SELECT * FROM posts WHERE user_id = :user AND is_active = 1 AND moderation_status = 'DECLINED'", nativeQuery = true)
+    List<Post> getMyDeclinedPosts(Pageable pageable, int user);
+
+    @Query(value="SELECT COUNT(*) FROM posts WHERE user_id = :user AND is_active = 1 AND moderation_status = 'DECLINED'", nativeQuery = true)
+    int countMyDeclinedPosts(int user);
+
+    @Query(value="SELECT * FROM posts WHERE user_id = :user AND is_active = 1 AND moderation_status = 'ACCEPTED'", nativeQuery = true)
+    List<Post> getMyPublishedPosts(Pageable pageable, int user);
+
+    @Query(value="SELECT COUNT(*) FROM posts WHERE user_id = :user AND is_active = 1 AND moderation_status = 'ACCEPTED'", nativeQuery = true)
+    int countMyPublishedPosts(int user);
 
 }

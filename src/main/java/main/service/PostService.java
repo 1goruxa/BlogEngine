@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import java.security.Principal;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -29,6 +30,8 @@ public class PostService {
     private Tag2PostRepository tag2PostRepository;
     @Autowired
     private VoteRepository voteRepository;
+    @Autowired
+    private UserRepository userRepository;
     final int ANNOUNCE_LENGTH = 150;
     final String DISLIKE_VALUE = "-1";
     final String LIKE_VALUE = "1";
@@ -176,7 +179,6 @@ public class PostService {
             case "recent": {
                 filteredPosts = postRepository.getRecentPosts(pageable);
                 countAvilablePosts = postRepository.countAllByIsActiveAndModerationStatusAndTimeLessThan(1, "ACCEPTED",new Date());
-                System.out.println(countAvilablePosts);
                 break;
             }
             case "early": {
@@ -206,6 +208,61 @@ public class PostService {
         }
         postsResponse.setPosts(postArrayList);
         postsResponse.setCount(countAvilablePosts);
+        return postsResponse;
+    }
+
+
+    public PostsResponse myPosts(int offset, int limit, String status, Principal principal){
+        PostsResponse postsResponse = new PostsResponse();
+        List<Post> filteredPosts;
+        Page<Post> pagedPosts = null;
+        Pageable pageable = PageRequest.of(offset / limit, limit);
+        int countAvilablePosts = 0;
+        Optional<User> optionalUser = userRepository.findOneByEmail(principal.getName());
+        User currentUser = optionalUser.get();
+
+
+        //status - статус модерации:
+        //inactive - скрытые, ещё не опубликованы (is_active = 0)
+        //pending - активные, ожидают утверждения модератором (is_active = 1, moderation_status = NEW)
+        //declined - отклонённые по итогам модерации (is_active = 1, moderation_status = DECLINED)
+        //published - опубликованные по итогам модерации (is_active = 1, moderation_status = ACCEPTED)
+
+        switch (status){
+            case "inactive":{
+                filteredPosts = postRepository.getMyInactivePosts(pageable,currentUser.getId());
+                countAvilablePosts = postRepository.countMyInactivePosts(currentUser.getId());
+                break;
+            }
+            case "pending":{
+                filteredPosts = postRepository.getMyPendingPosts(pageable,currentUser.getId());
+                countAvilablePosts = postRepository.countMyPendingPosts(currentUser.getId());
+                break;
+            }
+            case "declined":{
+                filteredPosts = postRepository.getMyDeclinedPosts(pageable,currentUser.getId());
+                countAvilablePosts = postRepository.countMyDeclinedPosts(currentUser.getId());
+                break;
+            }
+            case "published":{
+                filteredPosts = postRepository.getMyPublishedPosts(pageable,currentUser.getId());
+                countAvilablePosts = postRepository.countMyPublishedPosts(currentUser.getId());
+                break;
+            }
+            default: {
+                filteredPosts = Collections.emptyList();
+            }
+        }
+
+        pagedPosts = new PageImpl<>(filteredPosts);
+
+        ArrayList<PostResponse> postArrayList = new ArrayList<>();
+        for (Post post : pagedPosts){
+            postArrayList.add(mapPost2PostResponse(post));
+        }
+        postsResponse.setPosts(postArrayList);
+        postsResponse.setCount(countAvilablePosts);
+
         return postsResponse;
     }
 

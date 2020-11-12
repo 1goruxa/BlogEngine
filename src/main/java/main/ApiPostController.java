@@ -10,6 +10,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
+
 @RestController
 public class ApiPostController {
 
@@ -57,5 +59,14 @@ public class ApiPostController {
                                      @RequestParam(required = false, defaultValue = "0") int limit,
                                      @RequestParam(required = false, defaultValue = "") String date){
         return postService.searchPostsByDate(offset, limit, date);
+    }
+
+    @GetMapping("api/post/my")
+    public PostsResponse myPosts(@RequestParam(required = false, defaultValue = "0") int offset,
+                                 @RequestParam(required = false, defaultValue = "0") int limit,
+                                 @RequestParam(required = false, defaultValue = "recent") String status,
+                                 Principal principal){
+
+        return postService.myPosts(offset, limit, status, principal);
     }
 }

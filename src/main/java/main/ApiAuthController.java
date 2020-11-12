@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
+import java.security.Principal;
 
 @RestController
 public class ApiAuthController {
@@ -30,30 +31,8 @@ public class ApiAuthController {
     }
 
     @GetMapping("/api/auth/check")
-    private LoginResponse authCheck(){
-        return loginService.authCheck();
-
-        //Метод возвращает информацию о текущем авторизованном пользователе, если он авторизован.
-        //Он должен проверять, сохранён ли идентификатор текущей сессии в списке авторизованных.
-        //
-        //Значение moderationCount содержит количество постов необходимых для проверки модераторами.
-        // Считаются посты имеющие статус NEW и не проверерны модератором.
-        // Если пользователь не модератор возращать 0 в moderationCount.
-
-        // {
-        // "result": true,
-        //  "user": {
-        //    "id": 576,
-        //    "name": "Дмитрий Петров",
-        //    "photo": "/avatars/ab/cd/ef/52461.jpg",
-        //    "email": "petrov@petroff.ru",
-        //    "moderation": true,
-        //    "moderationCount": 56,
-        //    "settings": true
-        //  }
-        //{
-        //	"result": false
-        //}
+    private LoginResponse authCheck(Principal principal){
+        return loginService.authCheck(principal);
     }
 
     @GetMapping("/api/auth/captcha")
@@ -67,10 +46,14 @@ public class ApiAuthController {
     }
 
     @PostMapping("/api/auth/login")
-    @PreAuthorize("hasAnyAuthority()")
     private LoginResponse loginResponse(@RequestBody LoginRequest data){
         return loginService.login(data);
     }
 
+    @GetMapping("/api/auth/logout")
+
+    private LoginResponse logoutResponse(Principal principal){
+        return loginService.logout(principal);
+    }
 
 }

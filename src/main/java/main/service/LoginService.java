@@ -17,8 +17,10 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.security.Principal;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 @Service
 public class LoginService {
@@ -47,8 +49,7 @@ public class LoginService {
 
         System.out.println(loginRequest.getEmail() + " " + loginRequest.getPassword());
 
-        Authentication auth = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
-
+        Authentication auth = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getEmail(),loginRequest.getPassword()));
 
         SecurityContextHolder.getContext().setAuthentication(auth);
         UserDetails userDetails = (UserDetails) auth.getPrincipal();
@@ -62,17 +63,40 @@ public class LoginService {
             loginResponse.setResult(false);
         }
 
-
         return loginResponse;
     }
 
-    //Как-то возвращать isModerator. Все обработки запросов PreAuthorized (@PreAuthorize("hasAuthority('user:moderate')"))
+    //Все обработки запросов PreAuthorized (@PreAuthorize("hasAuthority('user:moderate')"))
 
-    public LoginResponse authCheck(){
+    public LoginResponse authCheck(Principal principal){
         //Проверка авторизованности пользователя с помощью Spring Security
 
         LoginResponse loginResponse = new LoginResponse();
+        LoginUserResponse loginUserResponse = new LoginUserResponse();
+
+        if (principal == null){
+            loginResponse.setResult(false);
+            return loginResponse;
+        }
+        else{
+            Optional<User> optUser = userRepository.findOneByEmail(principal.getName());
+            User currentUser = optUser.get();
+            loginUserResponse = mapUserToLoginUserResponse(currentUser);
+            loginResponse.setUser(loginUserResponse);
+            loginResponse.setResult(true);
+
+        }
         return loginResponse;
+    }
+
+    public LoginResponse logout(Principal principal){
+        LoginResponse loginResponse = new LoginResponse();
+        loginResponse.setResult(true);
+        if (principal != null){
+            SecurityContextHolder.clearContext();
+        }
+        return loginResponse;
+
     }
 
     //Маппинг логин и аутентиф пользователя

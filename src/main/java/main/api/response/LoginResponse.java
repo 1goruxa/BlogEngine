@@ -1,5 +1,8 @@
 package main.api.response;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+//@JsonIgnore()
 public class LoginResponse {
     boolean result;
     LoginUserResponse user;
