@@ -1,6 +1,7 @@
 package main.service;
 
 import main.Repo.*;
+import main.api.request.ModerationRequest;
 import main.api.response.*;
 import main.model.*;
 import org.jsoup.Jsoup;
@@ -13,11 +14,12 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
-
+import javax.transaction.Transactional;
 import java.security.Principal;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
 
+
+@Transactional
 @Service
 public class PostService {
     @Autowired
@@ -113,6 +115,7 @@ public class PostService {
     @ResponseStatus(code = HttpStatus.NOT_FOUND)
     public static class ThereIsNoSuchPostException extends RuntimeException {
     }
+
 
     //Получаем список найденный по запросу постов
     public PostsResponse searchAndGetPosts(int offset, int limit, String query){
@@ -265,6 +268,83 @@ public class PostService {
 
         return postsResponse;
     }
+
+    public PostsResponse postModeration(int offset, int limit, String status, Principal principal){
+        PostsResponse postsResponse = new PostsResponse();
+        List<Post> filteredPosts = null;
+        Page<Post> pagedPosts = null;
+        Pageable pageable = PageRequest.of(offset / limit, limit);
+        int countAvilablePosts = 0;
+        Optional<User> optionalUser = null;
+        if(principal != null) {optionalUser = userRepository.findOneByEmail(principal.getName());}
+        if (optionalUser.isPresent()) {
+            User currentUser = optionalUser.get();
+            if (currentUser.getIsModerator() == 1) {
+
+
+                switch (status){
+                    case "new":{
+                        filteredPosts = postRepository.getNewPostsForModeration(pageable);
+                        countAvilablePosts = postRepository.countNewPostsForModeration();
+                        break;
+                    }
+                    case "declined":{
+                        filteredPosts = postRepository.getDeclinedPostsForModeration(pageable);
+                        countAvilablePosts = postRepository.countDeclinedPostsForModeration();
+                        break;
+                    }
+                    case "accepted":{
+                        filteredPosts = postRepository.getAcceptedPostsForModeration(pageable);
+                        countAvilablePosts = postRepository.countAcceptedPostsForModeration();
+                        break;
+                    }
+                    default: {
+                        filteredPosts = Collections.emptyList();
+                    }
+                }
+
+            }
+        }
+
+        pagedPosts = new PageImpl<>(filteredPosts);
+
+        ArrayList<PostResponse> postArrayList = new ArrayList<>();
+        for (Post post : pagedPosts){
+            postArrayList.add(mapPost2PostResponse(post));
+        }
+        System.out.println(postArrayList);
+        System.out.println(postsResponse.getCount());
+        postsResponse.setPosts(postArrayList);
+        postsResponse.setCount(countAvilablePosts);
+
+        return postsResponse;
+    }
+
+    public ModerationResponse moderateDecision(ModerationRequest moderationRequest, Principal principal){
+        ModerationResponse moderationResponse = new ModerationResponse();
+        moderationResponse.setResult(false);
+
+        Optional<User> optionalUser = null;
+        if(principal != null) {optionalUser = userRepository.findOneByEmail(principal.getName());}
+        if (optionalUser.isPresent()) {
+            User currentUser = optionalUser.get();
+            Optional<Post> optionalPost = postRepository.findById(moderationRequest.getPostId());
+            Post post = optionalPost.get();
+            if (currentUser.getIsModerator() == 1 && post != null) {
+                if (moderationRequest.getDecision().equals("accept")){
+                    postRepository.acceptPost(post.getId(), currentUser.getId());
+                    moderationResponse.setResult(true);
+                }
+                else{
+                    postRepository.declinePost(post.getId(), currentUser.getId());
+                    moderationResponse.setResult(true);
+                }
+            }
+        }
+
+        return moderationResponse;
+    }
+
 
     //Маппинг Post -> PostResponse
     public PostResponse mapPost2PostResponse(Post post){

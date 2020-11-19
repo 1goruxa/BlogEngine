@@ -7,7 +7,7 @@ import java.util.List;
 @Entity(name = "tags")
 public class Tag {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     @OneToMany(targetEntity = Tag2Post.class, mappedBy = "tag")

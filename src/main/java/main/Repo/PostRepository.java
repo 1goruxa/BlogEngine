@@ -3,10 +3,12 @@ import main.model.Post;
 import main.model.User;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 import org.springframework.stereotype.Repository;
 
+import java.security.Principal;
 import java.util.Date;
 import java.util.List;
 
@@ -36,6 +38,15 @@ public interface PostRepository extends JpaRepository<Post, Integer>{
 
     @Query(value="select * from posts where time = :date", nativeQuery = true)
     List<Post> getPostsByDate(String date);
+
+    @Query(value = "select COUNT(id) from posts WHERE user_id = :id", nativeQuery = true)
+    int getPostsCount4MyStat(int id);
+
+    @Query(value = "select sum(view_count) from posts WHERE user_id = :id", nativeQuery = true)
+    int getViewsCounter4MyStat(int id);
+
+    @Query(value = "select min(time) from posts WHERE user_id = :id", nativeQuery = true)
+    Date getFirstPublication4MylStat(int id);
 
     @Query(value="select COUNT(id) from posts", nativeQuery = true)
     int getPostsCount4AllStat();
@@ -82,5 +93,31 @@ public interface PostRepository extends JpaRepository<Post, Integer>{
 
     @Query(value="SELECT COUNT(*) FROM posts WHERE user_id = :user AND is_active = 1 AND moderation_status = 'ACCEPTED'", nativeQuery = true)
     int countMyPublishedPosts(int user);
+
+    @Query(value="SELECT * FROM posts WHERE moderation_status = 'NEW' ", nativeQuery = true)
+    List<Post> getNewPostsForModeration(Pageable pageable);
+
+    @Query(value="SELECT * FROM posts WHERE moderation_status = 'DECLINED'", nativeQuery = true)
+    List<Post> getDeclinedPostsForModeration(Pageable pageable);
+
+    @Query(value="SELECT * FROM posts WHERE moderation_status = 'ACCEPTED'", nativeQuery = true)
+    List<Post> getAcceptedPostsForModeration(Pageable pageable);
+
+    @Query(value="SELECT COUNT(*) FROM posts WHERE moderation_status = 'NEW'", nativeQuery = true)
+    int countNewPostsForModeration();
+
+    @Query(value="SELECT COUNT(*) FROM posts WHERE moderation_status = 'DECLINED'", nativeQuery = true)
+    int countDeclinedPostsForModeration();
+
+    @Query(value="SELECT COUNT(*) FROM posts WHERE moderation_status = 'ACCEPTED'", nativeQuery = true)
+    int countAcceptedPostsForModeration();
+
+    @Modifying
+    @Query(value = "UPDATE posts SET moderation_status = 'ACCEPTED', moderator_id = :userId WHERE id = :postId",nativeQuery = true)
+    void acceptPost(int postId, int userId);
+
+    @Modifying
+    @Query(value = "UPDATE posts SET moderation_status = 'DECLINED', moderator_id = :userId WHERE id = :postId", nativeQuery = true)
+    void declinePost(int postId, int userId);
 
 }

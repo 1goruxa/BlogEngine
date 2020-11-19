@@ -1,16 +1,24 @@
 package main;
 
 import main.Repo.PostRepository;
+import main.api.request.LikeDislikeRequest;
+import main.api.request.ModerationRequest;
+import main.api.request.SavePostRequest;
+import main.api.response.LikeDislikeResponse;
+import main.api.response.ModerationResponse;
+import main.api.response.NewPostResponse;
 import main.api.response.PostsResponse;
 import main.Repo.UserRepository;
-import main.api.response.TagsResponse;
+import main.service.LikeDislikeService;
 import main.service.PostService;
+import main.service.SaveEditPostService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import javax.transaction.Transactional;
 import java.security.Principal;
+
 
 @RestController
 public class ApiPostController {
@@ -22,8 +30,16 @@ public class ApiPostController {
     private PostRepository postsRepository;
 
     private final PostService postService;
+    private final SaveEditPostService saveEditPostService;
+    private final LikeDislikeService likeDislikeService;
 
-    public ApiPostController(PostService postService) { this.postService = postService; }
+    public ApiPostController(UserRepository userRepository, PostRepository postsRepository, PostService postService, SaveEditPostService saveEditPostService, LikeDislikeService likeDislikeService) {
+        this.userRepository = userRepository;
+        this.postsRepository = postsRepository;
+        this.postService = postService;
+        this.saveEditPostService = saveEditPostService;
+        this.likeDislikeService = likeDislikeService;
+    }
 
 
     @GetMapping("/api/post")
@@ -34,10 +50,21 @@ public class ApiPostController {
         return postService.getPosts(offset, limit, mode);
     }
 
+    @PostMapping("/api/post")
+    private NewPostResponse savePost(@RequestBody SavePostRequest postRequest, Principal principal){
+
+        return saveEditPostService.savePost(postRequest, principal);
+    }
+
     @GetMapping("/api/post/{id}")
     public ResponseEntity getSinglePostById(@PathVariable int id) {
         return postService.getPostById(id);
 
+    }
+
+    @PutMapping("/api/post/{id}")
+    public NewPostResponse editPostById(@RequestBody SavePostRequest postRequest, @PathVariable int id, Principal principal){
+        return saveEditPostService.editPost(postRequest, id, principal);
     }
 
     @GetMapping("/api/post/search")
@@ -69,4 +96,31 @@ public class ApiPostController {
 
         return postService.myPosts(offset, limit, status, principal);
     }
+
+    @PostMapping("api/post/like")
+    public LikeDislikeResponse likePost(@RequestBody LikeDislikeRequest request, Principal principal){
+        return likeDislikeService.likePost(request, principal);
+    }
+
+    @PostMapping("api/post/dislike")
+    public LikeDislikeResponse dislikePost(@RequestBody LikeDislikeRequest request, Principal principal){
+        return likeDislikeService.dislikePost(request, principal);
+    }
+
+    @GetMapping("/api/post/moderation")
+    public PostsResponse postModeration(@RequestParam(required = false, defaultValue = "0") int offset,
+                                        @RequestParam(required = false, defaultValue = "0") int limit,
+                                        @RequestParam(required = false, defaultValue = "recent") String status,
+                                        Principal principal){
+        return postService.postModeration(offset,limit,status,principal);
+    }
+
+    @PostMapping("/api/moderation")
+    public ModerationResponse moderateDecision(@RequestBody ModerationRequest moderationRequest, Principal principal){
+
+        return postService.moderateDecision(moderationRequest, principal);
+    }
+
+
+
 }

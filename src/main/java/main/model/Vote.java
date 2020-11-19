@@ -7,7 +7,7 @@ import java.util.Date;
 public class Vote {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     @ManyToOne(targetEntity = Post.class)

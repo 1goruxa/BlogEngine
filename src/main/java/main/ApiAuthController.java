@@ -1,14 +1,16 @@
 package main;
 
 import main.api.request.LoginRequest;
+import main.api.request.PasswordRestoreRequest;
 import main.api.request.RegisterRequest;
 import main.api.response.CaptchaResponse;
 import main.api.response.LoginResponse;
+import main.api.response.PasswordRestoreResponse;
 import main.api.response.RegisterResponse;
 import main.service.CaptchaService;
 import main.service.LoginService;
+import main.service.PasswordService;
 import main.service.RegisterService;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -23,11 +25,13 @@ public class ApiAuthController {
     private final CaptchaService captchaService;
     private final RegisterService registerService;
     private final LoginService loginService;
+    private final PasswordService passwordService;
 
-    public ApiAuthController(CaptchaService captchaService, RegisterService registerService, LoginService loginService) {
+    public ApiAuthController(CaptchaService captchaService, RegisterService registerService, LoginService loginService, PasswordService passwordService) {
         this.captchaService = captchaService;
         this.registerService = registerService;
         this.loginService = loginService;
+        this.passwordService = passwordService;
     }
 
     @GetMapping("/api/auth/check")
@@ -51,9 +55,13 @@ public class ApiAuthController {
     }
 
     @GetMapping("/api/auth/logout")
-
     private LoginResponse logoutResponse(Principal principal){
         return loginService.logout(principal);
+    }
+
+    @PostMapping("/api/auth/restore")
+    private PasswordRestoreResponse passwordRestore(@RequestBody PasswordRestoreRequest passwordRestoreRequest){
+        return passwordService.restore(passwordRestoreRequest);
     }
 
 }

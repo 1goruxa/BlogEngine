@@ -39,7 +39,7 @@ CREATE TABLE `posts` (
   `is_active` int NOT NULL,
   `moderator_id` int NOT NULL,
   `moderation_status` ENUM('NEW', 'ACCEPTED','DECLINED') NOT NULL,
-  `text` varchar(255) DEFAULT NULL,
+  `text` varchar(2000) DEFAULT NULL,
   `time` datetime(6) DEFAULT NULL,
   `title` varchar(255) DEFAULT NULL,
   `user_id` int NOT NULL,

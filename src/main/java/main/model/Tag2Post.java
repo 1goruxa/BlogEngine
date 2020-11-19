@@ -5,7 +5,7 @@ import javax.persistence.*;
 @Entity
 public class Tag2Post {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     @OneToOne

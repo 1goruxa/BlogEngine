@@ -6,7 +6,7 @@ import java.util.Date;
 @Entity(name = "post_comments")
 public class Comment {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     @Column(name="parent_id")
