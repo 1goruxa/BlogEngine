@@ -1,8 +1,9 @@
 package main.api.response;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 
-//@JsonIgnore()
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class LoginResponse {
     boolean result;
     LoginUserResponse user;
