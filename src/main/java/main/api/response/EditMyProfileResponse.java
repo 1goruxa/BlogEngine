@@ -23,13 +23,3 @@ public class EditMyProfileResponse {
         this.errors = errors;
     }
 }
-
-//{
-//   "result": false,
-//   "errors": {
-//   	"email": "Этот e-mail уже зарегистрирован",
-//   	"photo": "Фото слишком большое, нужно не более 5 Мб",
-//   	"name": "Имя указано неверно",
-//   	"password": "Пароль короче 6-ти символов",
-//    }
-//}

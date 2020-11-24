@@ -3,12 +3,20 @@ package main;
 import main.api.request.AddCommentRequest;
 import main.api.request.EditMyProfileRequest;
 import main.api.request.SettingsRequest;
+
 import main.api.response.*;
 import main.service.*;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.commons.CommonsMultipartFile;
+import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.File;
+import java.io.IOException;
 import java.security.Principal;
 import java.time.Year;
 
@@ -85,10 +93,26 @@ public class ApiGeneralController {
         return commentService.addComment(addCommentRequest, principal);
     }
 
-    @PostMapping(value = "/api/profile/my", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE}, produces = {MediaType.APPLICATION_JSON_VALUE})
-    private EditMyProfileResponse editMyProfileResponse(EditMyProfileRequest editMyProfileRequest, Principal principal){
-        return profileService.edit(editMyProfileRequest, principal);
+    @PostMapping (value = "/api/profile/my")
+    private EditMyProfileResponse editMyProfileResponse(@RequestBody EditMyProfileRequest editMyProfileRequest, Principal principal) {
+        MultipartFile photo = null;
+        String name = editMyProfileRequest.getName();
+        String email = editMyProfileRequest.getEmail();
+        int removePhoto = editMyProfileRequest.getRemovePhoto();
+        String password = editMyProfileRequest.getPassword();
+        return profileService.edit(name, email, photo, removePhoto, password, principal);
     }
+
+    @PostMapping (value = "/api/profile/my", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE}, produces = "*/*")
+    private EditMyProfileResponse editMyProfileResponse2 (@ModelAttribute(name="photo") MultipartFile photo,
+                                                        @ModelAttribute(name="name") String name,
+                                                        @ModelAttribute(name="email") String email,
+                                                        @ModelAttribute(name="password") String password,
+                                                        Integer removePhoto,
+                                                        Principal principal) throws IOException {
+        return profileService.edit(name, email, photo, removePhoto, password, principal);
+    }
+
 
 
 //    @PostMapping("api/image")
@@ -100,4 +124,7 @@ public class ApiGeneralController {
     //!global settings
 
 
+
 }
+
+

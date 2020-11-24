@@ -5,17 +5,17 @@ import org.springframework.web.multipart.MultipartFile;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class EditMyProfileRequest {
-    private MultipartFile photo;
+    private String photo;
     private String name;
     private String email;
     private String password;
     private int removePhoto;
 
-    public MultipartFile getPhoto() {
+    public String getPhoto() {
         return photo;
     }
 
-    public void setPhoto(MultipartFile photo) {
+    public void setPhoto(String photo) {
         this.photo = photo;
     }
 
