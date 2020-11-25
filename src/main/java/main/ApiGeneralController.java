@@ -7,16 +7,11 @@ import main.api.request.SettingsRequest;
 import main.api.response.*;
 import main.service.*;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.commons.CommonsMultipartFile;
-import org.springframework.web.servlet.ModelAndView;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.File;
-import java.io.IOException;
+import javax.naming.SizeLimitExceededException;
 import java.security.Principal;
 import java.time.Year;
 
@@ -30,8 +25,9 @@ public class ApiGeneralController {
     private final StatService statService;
     private final CommentService commentService;
     private final ProfileService profileService;
+    private final ImageService imageService;
 
-    public ApiGeneralController(SettingsService settingsService, InitResponse initResponse, TagService tagService, CalendarService calendarService, StatService statService, CommentService commentService, ProfileService profileService) {
+    public ApiGeneralController(SettingsService settingsService, InitResponse initResponse, TagService tagService, CalendarService calendarService, StatService statService, CommentService commentService, ProfileService profileService, ImageService imageService) {
         this.settingsService = settingsService;
         this.initResponse = initResponse;
         this.tagService = tagService;
@@ -39,6 +35,7 @@ public class ApiGeneralController {
         this.statService = statService;
         this.commentService = commentService;
         this.profileService = profileService;
+        this.imageService = imageService;
     }
 
     @GetMapping("/api/settings")
@@ -109,22 +106,24 @@ public class ApiGeneralController {
                                                         @ModelAttribute(name="email") String email,
                                                         @ModelAttribute(name="password") String password,
                                                         Integer removePhoto,
-                                                        Principal principal) throws IOException {
+                                                        Principal principal) throws SizeLimitExceededException {
+        if(photo.getSize() > 5242880){
+            removePhoto = 2;
+        }
+
         return profileService.edit(name, email, photo, removePhoto, password, principal);
     }
 
+    @PostMapping(value = "api/image", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE}, produces ="*/*")
+    private ResponseEntity saveImage(@RequestParam(name = "image") MultipartFile multipartFile, Principal principal){
 
-
-//    @PostMapping("api/image")
-//    private imageResponse saveImage(){
-//
-//        return imageService.saveImage();
-//    }
+        return imageService.saveImage(multipartFile, principal);
+    }
 
     //!global settings
 
-
-
 }
+
+
 
 

@@ -88,8 +88,6 @@ public class SaveEditPostService {
                 if(!optionalTag2Post.isPresent()){
                     tag2PostRepository.save(tag2Post);
                 }
-
-
             });
 
         }

@@ -144,6 +144,7 @@ public class PostService {
         PostsResponse postsResponse = new PostsResponse();
         PageRequest pageReq = PageRequest.of(offset/limit,limit,Sort.Direction.DESC,"time");
         List <Post> filteredPosts = postRepository.getPostsByDate(date);
+        System.out.println("ПОСТОВ " + filteredPosts.size());
         Page<Post> pagedPosts = new PageImpl<>(filteredPosts);
         ArrayList<PostResponse> postArrayList = new ArrayList<>();
         for (Post post : pagedPosts){
@@ -180,22 +181,22 @@ public class PostService {
 
         switch (mode) {
             case "recent": {
-                filteredPosts = postRepository.getRecentPosts(pageable);
+                filteredPosts = postRepository.getRecentPosts(pageable, new Date());
                 countAvilablePosts = postRepository.countAllByIsActiveAndModerationStatusAndTimeLessThan(1, "ACCEPTED",new Date());
                 break;
             }
             case "early": {
-                filteredPosts = postRepository.getEarlyPosts(pageable);
+                filteredPosts = postRepository.getEarlyPosts(pageable, new Date());
                 countAvilablePosts = postRepository.countAllByIsActiveAndModerationStatusAndTimeLessThan(1, "ACCEPTED",new Date());
                 break;
             }
             case "best": {
-                filteredPosts = postRepository.getBestPosts(pageable);
+                filteredPosts = postRepository.getBestPosts(pageable, new Date());
                 countAvilablePosts = postRepository.counter4Best();
                 break;
             }
             case "popular": {
-                filteredPosts = postRepository.getDiscussedPosts(pageable);
+                filteredPosts = postRepository.getDiscussedPosts(pageable, new Date());
                 countAvilablePosts = postRepository.counter4Discussd();
                 break;
             }

@@ -36,15 +36,13 @@ public class ProfileService {
     private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(12);
 
     public EditMyProfileResponse edit(String name, String emailReq, MultipartFile photo, int removePhoto, String password, Principal principal){
-        EditMyProfileResponse editMyProfileResponse = new EditMyProfileResponse();
 
+        EditMyProfileResponse editMyProfileResponse = new EditMyProfileResponse();
         EditMyProfileRequest editMyProfileRequest = new EditMyProfileRequest();
         editMyProfileRequest.setName(name);
         editMyProfileRequest.setEmail(emailReq);
         editMyProfileRequest.setPassword(password);
         editMyProfileRequest.setRemovePhoto(removePhoto);
-
-        boolean duplicatedNameEmail = false;
         editMyProfileResponse.setResult(false);
         Optional<User> optionalUser = null;
         if(principal != null) {optionalUser = userRepository.findOneByEmail(principal.getName());}
@@ -53,7 +51,7 @@ public class ProfileService {
             editMyProfileResponse.setResult(true);
             ErrorsOnProfileEdit errorsOnProfileEdit = new ErrorsOnProfileEdit();
 
-            //Ошибки редактирования профиля
+            //Ошибки редактирования профиля. Дубликаты имени и почты
             Optional<User> duplicatedNameUserOptional = userRepository.findOneByName(editMyProfileRequest.getName());
             User duplicatedNameUser = new User();
             User duplicatedEmailUser = new User();
@@ -79,7 +77,7 @@ public class ProfileService {
                 currentUser.setEmail(editMyProfileRequest.getEmail());
             }
 
-            //----------------------------------------------------
+            //Длина пароля
             if (editMyProfileRequest.getPassword() != null && !editMyProfileRequest.getPassword().equals("")){
                 if (editMyProfileRequest.getPassword().length()>5){
                     currentUser.setPassword(passwordEncoder.encode(editMyProfileRequest.getPassword()));
@@ -89,8 +87,14 @@ public class ProfileService {
                     editMyProfileResponse.setResult(false);
                 }
             }
-            //----------------------------------------------------
+            //Фото больше 5мб
+            if (removePhoto == 2){
+                photo = null;
+                errorsOnProfileEdit.setPhoto("Фото слишком большое, нужно не более 5 Мб");
+                editMyProfileResponse.setResult(false);
+            }
 
+            //Обработка фото
             if (photo != null){
 
                 String email = currentUser.getEmail();

@@ -20,20 +20,10 @@ public class MvcConfig implements WebMvcConfigurer {
         registry
                 .addResourceHandler("/**")
                 .addResourceLocations("classpath:/static/");
+        registry
+                .addResourceHandler("/uploads/**")
+                .addResourceLocations("file:uploads/");
     }
-
-    @Bean(name = "multipartResolver")
-    public CommonsMultipartResolver commonMultipartResolver() {
-        CommonsMultipartResolver multipartResolver = new CommonsMultipartResolver();
-        multipartResolver.setMaxUploadSize(100000);
-        return multipartResolver;
-    }
-
-    @Bean
-    public StandardServletMultipartResolver multipartResolver() {
-        return new StandardServletMultipartResolver();
-    }
-
 }
 
 
