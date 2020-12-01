@@ -18,7 +18,7 @@ public interface PostRepository extends JpaRepository<Post, Integer>{
     @Query(value = "SELECT  *, COUNT(post_id) AS count FROM posts JOIN post_votes ON post_votes.post_id = posts.id  WHERE posts.time < :date AND is_active=\"1\" AND moderation_status=\"ACCEPTED\" AND posts.time < NOW() AND value = \"1\" GROUP BY (post_id) ORDER BY count DESC", nativeQuery = true)
     List<Post> getBestPosts(Pageable pageable, Date date);
 
-    @Query(value = "SELECT  *, COUNT(post_id) AS count FROM posts JOIN post_comments ON post_comments.post_id = posts.id  WHERE time < :date AND is_active=\"1\" AND moderation_status=\"ACCEPTED\" AND posts.time < NOW() GROUP BY (post_id) ORDER BY count DESC", nativeQuery = true)
+    @Query(value = "SELECT  *, COUNT(post_id) AS count FROM posts JOIN post_comments ON post_comments.post_id = posts.id  WHERE posts.time < :date AND is_active=\"1\" AND moderation_status=\"ACCEPTED\" AND posts.time < NOW() GROUP BY (post_id) ORDER BY count DESC", nativeQuery = true)
     List<Post> getDiscussedPosts(Pageable pageable, Date date);
 
     @Query(value= "SELECT * FROM posts WHERE time < :date AND is_active=\"1\" AND moderation_status=\"ACCEPTED\" ORDER BY time DESC ", nativeQuery = true)

@@ -8,6 +8,7 @@ import main.api.response.RegisterResponse;
 import main.model.Captcha;
 import main.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -15,9 +16,13 @@ import org.springframework.stereotype.Service;
 import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Optional;
 
 @Service
 public class RegisterService {
+    @Value("${hashUserLength}")
+    long hashLength;
+
     @Autowired
     private UserRepository userRepository;
     @Autowired
@@ -67,10 +72,21 @@ public class RegisterService {
             //! Можем установить модератором
             user.setIsModerator(0);
 
-            //Код для активной сессии - 5 цифр
+            //Код для активной сессии - 5 цифр. Проверка на уникальность. Менять алгоритм на hash тут
             SecureRandom random = new SecureRandom();
-            int num = random.nextInt(100000);
-            String code = String.format("%05d", num);
+            int bound = 10;
+            for(int i=1;i<hashLength;i++){
+                bound = bound*10;
+            }
+            Optional<User> duplicateCodeUser = null;
+            String code;
+            do {
+                int num = random.nextInt(bound);
+                code = String.format("%05d", num);
+                duplicateCodeUser = userRepository.findOneByCode(code);
+            }
+            while (duplicateCodeUser.isPresent());
+
             user.setCode(code);
 
             userRepository.save(user);

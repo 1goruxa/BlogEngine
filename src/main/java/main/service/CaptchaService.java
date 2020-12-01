@@ -5,7 +5,9 @@ import com.github.cage.YCage;
 import main.Repo.CaptchaRepository;
 import main.api.response.CaptchaResponse;
 import main.model.Captcha;
+import main.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -14,10 +16,14 @@ import java.io.IOException;
 import java.security.SecureRandom;
 import java.util.Base64;
 import java.util.Date;
+import java.util.Optional;
 
 
 @Service
 public class CaptchaService {
+    @Value("${hashCaptchaLength}")
+    long hashLength;
+
     @Autowired
     private CaptchaRepository captchaRepository;
 
@@ -47,12 +53,15 @@ public class CaptchaService {
         Captcha captcha = new Captcha();
         SecureRandom random = new SecureRandom();
 
-        //! Формат секретного ключа не определен. По умолчанию 5 цифр
-        int num = random.nextInt(100000);
+        int bound = 10;
+        for(int i=1;i<hashLength;i++){
+            bound = bound*10;
+        }
+        int num = random.nextInt(bound);
         String secretCode = String.format("%05d", num);
-
         num = random.nextInt(100000);
         String code = String.format("%05d", num);
+
         Date time = new Date();
         captchaRepository.killOldCaptchas();
         captchaRepository.createCaptcha(code, secretCode, time);
@@ -62,10 +71,5 @@ public class CaptchaService {
         captcha.setTime(time);
         return captcha;
     }
-
-//При восстановлении пароля, регистрации и прочих запросов с captcha, после того как пользователя вводит данные каптчи,
-// отправляется форма содержащая текст-расшифровка каптчи пользователем и secret.
-// Сервис ищем по secret запись о каптче и сравнивает ввод пользователя с code полем записи таблицы captcha_codes.
-// На основе сравнения решается - каптча введена верно или нет.
 
 }

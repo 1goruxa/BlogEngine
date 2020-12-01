@@ -28,79 +28,61 @@ public class LikeDislikeService {
     private PostRepository postRepository;
 
 
-
-    public LikeDislikeResponse likePost(LikeDislikeRequest request, Principal principal){
+    public LikeDislikeResponse likeDislikePost(String type, LikeDislikeRequest request, Principal principal){
         LikeDislikeResponse likeDislikeResponse = new LikeDislikeResponse();
+        User currentUser;
         Optional<User> optionalUser = null;
-        if(principal != null) {optionalUser = userRepository.findOneByEmail(principal.getName());}
         likeDislikeResponse.setResult(false);
+        if (principal != null) {
+            likeDislikeResponse.setResult(true);
+            optionalUser = userRepository.findOneByEmail(principal.getName());
+        }
+            if (optionalUser != null) {
+                currentUser = optionalUser.get();
+                boolean alreadyVoted = false;
+                boolean altVoted = false;
+                Vote altVoteExist = new Vote();
+                //Проверяем голосовал ли пользователь уже
+                Optional<Vote> duplicateVote = voteRepository.findOneByIdAndType(currentUser.getId(), request.getPostId(), type);
+                if(duplicateVote.isPresent()){
+                    alreadyVoted = true;
+                }
+                else{
+                    //Было ли альтернативное голосование (дизлайк на лайк и наоборот)
+                    String altType;
+                    if (type.equals("1")){
+                        altType = "-1";
+                    }
+                    else{
+                        altType = "1";
+                    }
+                    Optional<Vote> altVote = voteRepository.findOneByIdAndType(currentUser.getId(), request.getPostId(), altType);
+                    if (altVote.isPresent()){
+                        altVoted = true;
+                        altVoteExist = altVote.get();
+                    }
+                }
 
-        if (optionalUser != null) {
-         User user = optionalUser.get();
-         Vote vote = voteRepository.findOneByIdAndType(user.getId(), request.getPostId(), "1");
-
-         if (vote == null) {
-             vote = voteRepository.findOneByIdAndType(user.getId(), request.getPostId(), "-1");
-             if (vote == null) {
-                 vote = new Vote();
-                 Optional<Post> optionalPost = postRepository.findById(request.getPostId());
-                 Post post = optionalPost.get();
-                 vote.setPost(post);
-                 vote.setUser(user);
-                 vote.setValue("1");
-                 vote.setTime(new Date());
-                 voteRepository.save(vote);
-                 likeDislikeResponse.setResult(true);
-             }
-             else {
-                 voteRepository.delete(vote);
-                 vote.setValue("1");
-                 vote.setTime(new Date());
-                 voteRepository.save(vote);
-                 likeDislikeResponse.setResult(true);
-             }
-
-         }
-     }
-        return likeDislikeResponse;
-    }
-
-    public LikeDislikeResponse dislikePost(LikeDislikeRequest request, Principal principal){
-        LikeDislikeResponse likeDislikeResponse = new LikeDislikeResponse();
-        Optional<User> optionalUser = null;
-        if(principal != null) {optionalUser = userRepository.findOneByEmail(principal.getName());}
-        likeDislikeResponse.setResult(false);
-
-        if (optionalUser != null) {
-            User user = optionalUser.get();
-            Vote vote = voteRepository.findOneByIdAndType(user.getId(), request.getPostId(), "-1");
-
-            if (vote == null) {
-                vote = voteRepository.findOneByIdAndType(user.getId(), request.getPostId(), "1");
-                if (vote == null) {
-                    vote = new Vote();
+                //Действия в зависимости от предыдущих проверок
+                if(alreadyVoted){
+                    likeDislikeResponse.setResult(false);
+                }
+                else {
+                    Vote vote = new Vote();
                     Optional<Post> optionalPost = postRepository.findById(request.getPostId());
                     Post post = optionalPost.get();
                     vote.setPost(post);
-                    vote.setUser(user);
-                    vote.setValue("-1");
+                    vote.setUser(currentUser);
+                    vote.setValue(type);
                     vote.setTime(new Date());
-                    voteRepository.save(vote);
-                    likeDislikeResponse.setResult(true);
-                }
-                else {
-                    voteRepository.delete(vote);
-                    vote.setValue("-1");
-                    vote.setTime(new Date());
-                    voteRepository.save(vote);
-                    likeDislikeResponse.setResult(true);
-                }
 
+                    if (altVoted) {
+                        vote.setId(altVoteExist.getId());
+                        voteRepository.delete(altVoteExist);
+                    }
+                    voteRepository.save(vote);
+                }
             }
-        }
         return likeDislikeResponse;
-
-      }
-
-
+    }
 }

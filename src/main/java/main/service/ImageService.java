@@ -33,7 +33,8 @@ public class ImageService {
         ImageResponse imageResponse = new ImageResponse();
         ErrorsOnImageLoad errorsOnImageLoad = new ErrorsOnImageLoad();
         imageResponse.setResult(true);
-        String uploadPathName = "";
+        String pathName = "";
+        ArrayList<String> folders = new ArrayList<>();
 
         //Метод загружает на сервер изображение в папку upload и три случайные подпапки. Имена подпапок и изображения
         // можно формировать из случайного хэша, разделяя его на части.
@@ -49,12 +50,13 @@ public class ImageService {
               assert extension != null;
                 if (extension.equals("jpg") || extension.equals("png")) {
                     if (imageResponse.isResult()) {
-                        String pathName = System.getProperty("user.dir") + "\\uploads\\" + image.getOriginalFilename();
+                        //String pathName = System.getProperty("user.dir") + "\\uploads\\" + image.getOriginalFilename();
                        //3 случайные подпапки
-                        ArrayList<String> folders = getRandomFolderNames();
-
-
-
+                        folders = getRandomFolderNames();
+                        String folderPath = System.getProperty("user.dir")+"\\uploads\\"+"\\"+folders.get(0)+"\\"+folders.get(1)+"\\"+folders.get(2);
+                        boolean n1 = new File(folderPath).mkdirs();
+                        System.out.println("!!!!!!!!!!!!!!!!!!" + n1);
+                        pathName = folderPath + "\\" + image.getOriginalFilename();
                        //-------------------
                         try {
                             File fileLogo = new File(pathName);
@@ -87,8 +89,8 @@ public class ImageService {
         ResponseEntity responseEntity;
         if (imageResponse.isResult()){
             httpStatus = HttpStatus.OK;
-            uploadPathName = "/uploads/" + image.getOriginalFilename();
-            responseEntity = new ResponseEntity(uploadPathName, httpStatus);
+            pathName = "/uploads/" + folders.get(0) + "/" + folders.get(1) + "/" + folders.get(2) + "/" + image.getOriginalFilename();
+            responseEntity = new ResponseEntity(pathName, httpStatus);
         }
         else{
             httpStatus = HttpStatus.BAD_REQUEST;

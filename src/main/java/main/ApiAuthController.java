@@ -1,12 +1,10 @@
 package main;
 
+import main.api.request.ChangePasswordRequest;
 import main.api.request.LoginRequest;
 import main.api.request.PasswordRestoreRequest;
 import main.api.request.RegisterRequest;
-import main.api.response.CaptchaResponse;
-import main.api.response.LoginResponse;
-import main.api.response.PasswordRestoreResponse;
-import main.api.response.RegisterResponse;
+import main.api.response.*;
 import main.service.CaptchaService;
 import main.service.LoginService;
 import main.service.PasswordService;
@@ -65,10 +63,10 @@ public class ApiAuthController {
         return passwordService.restore(passwordRestoreRequest);
     }
 
-//    @PostMapping("/api/auth/password")
-//    private ChangePasswordResponse changePasswordResponse(@RequestBody ChangePasswordRequest changePasswordRequest){
-//        return passwordService.change(changePasswordRequest);
-//    }
+    @PostMapping("/api/auth/password")
+    private ChangePasswordResponse changePasswordResponse(@RequestBody ChangePasswordRequest changePasswordRequest){
+        return passwordService.change(changePasswordRequest);
+    }
 
 
 }

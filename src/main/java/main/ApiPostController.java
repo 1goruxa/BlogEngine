@@ -57,8 +57,8 @@ public class ApiPostController {
     }
 
     @GetMapping("/api/post/{id}")
-    public ResponseEntity getSinglePostById(@PathVariable int id) {
-        return postService.getPostById(id);
+    public ResponseEntity getSinglePostById(@PathVariable int id, Principal principal) {
+        return postService.getPostById(id, principal);
 
     }
 
@@ -99,12 +99,12 @@ public class ApiPostController {
 
     @PostMapping("api/post/like")
     public LikeDislikeResponse likePost(@RequestBody LikeDislikeRequest request, Principal principal){
-        return likeDislikeService.likePost(request, principal);
+        return likeDislikeService.likeDislikePost("1", request, principal);
     }
 
     @PostMapping("api/post/dislike")
     public LikeDislikeResponse dislikePost(@RequestBody LikeDislikeRequest request, Principal principal){
-        return likeDislikeService.dislikePost(request, principal);
+        return likeDislikeService.likeDislikePost("-1", request, principal);
     }
 
     @GetMapping("/api/post/moderation")

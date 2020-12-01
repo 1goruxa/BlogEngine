@@ -41,15 +41,20 @@ public class PostService {
 
 
     //Возврат поста по ID
-    public ResponseEntity<Post> getPostById(int id) {
+    public ResponseEntity<Post> getPostById(int id, Principal principal) {
         Post postById = postRepository.findById(id).orElseThrow(ThereIsNoSuchPostException::new);;
 
-        boolean influencedCounter = false;
 
-        //! Увеличивем view_count в этом блоке (пока без правил)
-        influencedCounter = true; //Флаг того что мы можем повлиять на изменение счетчика
-        postById.setViewCount(postById.getViewCount()+1);
-        postRepository.save(postById);
+
+        //Увеличивем view_count в этом блоке
+        //Флаг того что мы можем повлиять на изменение счетчика
+        boolean influencedCounter = false;
+        if(principal != null){
+            influencedCounter = true;
+            postById.setViewCount(postById.getViewCount()+1);
+            postRepository.save(postById);
+        }
+
         //----
         PostByIdResponse postByIdResponse = new PostByIdResponse();
         UserPostResponse userPostResponse = new UserPostResponse(postById.getUser().getId(), postById.getUser().getName());
@@ -342,7 +347,6 @@ public class PostService {
                 }
             }
         }
-
         return moderationResponse;
     }
 
@@ -371,7 +375,7 @@ public class PostService {
         int counter = (int) post
                 .getVotesSet()
                 .stream()
-                .filter(v -> v.getValue().equals(LIKE_VALUE))
+                .filter(v -> v.getValue().equals(type))
                 .count();;
 
         return counter;
