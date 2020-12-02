@@ -55,7 +55,6 @@ public class ImageService {
                         folders = getRandomFolderNames();
                         String folderPath = System.getProperty("user.dir")+"\\uploads\\"+"\\"+folders.get(0)+"\\"+folders.get(1)+"\\"+folders.get(2);
                         boolean n1 = new File(folderPath).mkdirs();
-                        System.out.println("!!!!!!!!!!!!!!!!!!" + n1);
                         pathName = folderPath + "\\" + image.getOriginalFilename();
                        //-------------------
                         try {

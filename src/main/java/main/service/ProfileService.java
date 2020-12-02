@@ -102,7 +102,8 @@ public class ProfileService {
                 email = email.replace('.', '-');
 
                 String extension = FilenameUtils.getExtension(photo.getOriginalFilename());
-                String fileName = "logo" + currentUser.getName() + email + "." + extension;
+
+                String fileName = "logo" + currentUser.getName() + "" + email + "." + extension;
 
                 assert extension != null;
                 if (extension.equals("jpg") || extension.equals("png")) {

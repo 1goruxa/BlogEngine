@@ -1,24 +1,30 @@
 package main.service;
 
 import main.Repo.CaptchaRepository;
+import main.Repo.SettingsRepository;
 import main.Repo.UserRepository;
 import main.api.request.RegisterRequest;
 import main.api.response.RegisterErrorsResponse;
 import main.api.response.RegisterResponse;
 import main.model.Captcha;
+import main.model.GlobalSettings;
 import main.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Optional;
 
 @Service
+@Transactional
 public class RegisterService {
     @Value("${hashUserLength}")
     long hashLength;
@@ -29,10 +35,13 @@ public class RegisterService {
     private CaptchaRepository captchaRepository;
     private PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(12);
 
+    @Autowired
+    private SettingsRepository settingsRepository;
 
-    public RegisterResponse register(RegisterRequest registerRequest){
+    public ResponseEntity<RegisterResponse> register(RegisterRequest registerRequest){
         RegisterResponse registerResponse = new RegisterResponse();
         RegisterErrorsResponse registerErrorsResponse = new RegisterErrorsResponse();
+        HttpStatus httpStatus = HttpStatus.OK;;
 
         //Тут все проверки на возможность зарегистрироваться
         registerResponse.setResult(true);
@@ -89,11 +98,21 @@ public class RegisterService {
 
             user.setCode(code);
 
-            userRepository.save(user);
+            //Проверка на глобальные настройки разрешения регистрировать
+            GlobalSettings globalSettings = settingsRepository.findOneByName("MULTIUSER_MODE");
+            String multiUserModeSettngs = globalSettings.getValue();
 
+            if (multiUserModeSettngs.equals("0")){
+                httpStatus = HttpStatus.NOT_FOUND;
+                registerResponse.setResult(false);
+            }
+            else{
+                httpStatus = HttpStatus.OK;
+                userRepository.save(user);
+            }
         }
 
-        return registerResponse;
+        return new ResponseEntity(registerResponse, httpStatus);
     }
 
 }

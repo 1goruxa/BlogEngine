@@ -9,6 +9,7 @@ import main.service.CaptchaService;
 import main.service.LoginService;
 import main.service.PasswordService;
 import main.service.RegisterService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -44,7 +45,7 @@ public class ApiAuthController {
     }
 
     @PostMapping("/api/auth/register")
-    private RegisterResponse register(@RequestBody RegisterRequest data){
+    private ResponseEntity<RegisterResponse> register(@RequestBody RegisterRequest data){
         return registerService.register(data);
     }
 

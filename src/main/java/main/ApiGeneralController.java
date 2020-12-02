@@ -76,8 +76,8 @@ public class ApiGeneralController {
     }
 
     @GetMapping("api/statistics/all")
-    private StatResponse statResponse(){
-        return statService.getAllStat();
+    private ResponseEntity statResponse(Principal principal){
+        return statService.getAllStat(principal);
     }
 
     @GetMapping("api/statistics/my")

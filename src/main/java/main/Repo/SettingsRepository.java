@@ -19,6 +19,8 @@ public interface SettingsRepository extends JpaRepository<GlobalSettings, Intege
     @Query(value="INSERT INTO global_settings (code, name, value) values (\"1\", \"MULTIUSER_MODE\", :multiUser)", nativeQuery = true)
     void setMultiUser(boolean multiUser);
 
+    GlobalSettings findOneByName(String settings);
+
     @Modifying
     @Query(value="INSERT INTO global_settings (code, name, value) values (\"2\", \"POST_PREMODERATION\", :postModer)", nativeQuery = true)
     void setPostModer(boolean postModer);
