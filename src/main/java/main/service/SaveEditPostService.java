@@ -1,16 +1,10 @@
 package main.service;
 
-import main.Repo.PostRepository;
-import main.Repo.Tag2PostRepository;
-import main.Repo.TagRepository;
-import main.Repo.UserRepository;
+import main.Repo.*;
 import main.api.request.SavePostRequest;
 import main.api.response.ErrorsOnPostResponse;
 import main.api.response.NewPostResponse;
-import main.model.Post;
-import main.model.Tag;
-import main.model.Tag2Post;
-import main.model.User;
+import main.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.expression.spel.ast.OpAnd;
 import org.springframework.stereotype.Service;
@@ -35,6 +29,9 @@ public class SaveEditPostService {
     @Autowired
     private Tag2PostRepository tag2PostRepository;
 
+    @Autowired
+    private SettingsRepository settingsRepository;
+
     //Редактирование поста
     public NewPostResponse editPost(SavePostRequest savePostRequest, int id,  Principal principal){
 
@@ -54,12 +51,17 @@ public class SaveEditPostService {
 
             int postId = post.getId();
             post.setText(savePostRequest.getText());
-            //post.setUser(currentUser);
             post.setIsActive(savePostRequest.getActive());
             post.setId(postId);
             post.setTitle(savePostRequest.getTitle());
             if (currentUser.getIsModerator() != 1){
-                post.setModerationStatus("NEW");
+                GlobalSettings globalSettings = settingsRepository.findOneByName("POST_PREMODERATION");
+                String postPremoderationSettngs = globalSettings.getValue();
+                //Если включена модерация постов и автор не модер, то пост улетает на модерацию
+                //Иначе он останется в своем текущем статусе
+                if(postPremoderationSettngs.equals("1")) {
+                    post.setModerationStatus("NEW");
+                }
             }
             if (savePostRequest.getTimestamp() < System.currentTimeMillis()/1000) {
                 post.setTime(new Date());
@@ -68,19 +70,16 @@ public class SaveEditPostService {
                 post.setTime(new Date(savePostRequest.getTimestamp()*1000));
             }
             System.out.println(post.getText());
-
             postRepository.save(post);
             newPostResponse.setResult(true);
 
             savePostRequest.getTags().forEach(t ->{
                 Tag tag = tagRepository.findOneByText(t);
-
                 if (tag == null){
                     tag = new Tag();
                     tag.setText(t);
                     tagRepository.save(tag);
                 }
-
                 Tag2Post tag2Post = new Tag2Post();
                 tag2Post.setPost(post);
                 tag2Post.setTag(tag);
@@ -89,7 +88,6 @@ public class SaveEditPostService {
                     tag2PostRepository.save(tag2Post);
                 }
             });
-
         }
         else{
             if (savePostRequest.getTitle().length() < 3){
@@ -101,15 +99,20 @@ public class SaveEditPostService {
                 newPostResponse.setErrors(errorsOnPostResponse);
             }
         }
-
     }
     return newPostResponse;
 }
 
 
     public NewPostResponse savePost(SavePostRequest postRequest, Principal principal){
+        // POST_PREMODERATION - если включен этот режим, то все новые посты пользователей с moderation = false
+        // обязательно должны попадать на модерацию, у постов при создании должен быть установлен moderation_status = NEW.
+
+
         NewPostResponse newPostResponse = new NewPostResponse();
         ErrorsOnPostResponse errorsOnPostResponse = new ErrorsOnPostResponse();
+        GlobalSettings globalSettings = settingsRepository.findOneByName("POST_PREMODERATION");
+        String postPremoderationSettngs = globalSettings.getValue();
 
         if (principal != null) {
             if (postRequest.getTitle().length() < 3){
@@ -128,13 +131,25 @@ public class SaveEditPostService {
                 newPostResponse.setResult(true);
                 newPostResponse.setErrors(new ErrorsOnPostResponse());
                 Post post = new Post();
-                post.setModerationStatus("NEW");
                 post.setTitle(postRequest.getTitle());
                 post.setText(postRequest.getText());
                 post.setIsActive(postRequest.getActive());
                 Optional<User> optionaluser = userRepository.findOneByEmail(principal.getName());
                 User user = optionaluser.get();
                 post.setUser(user);
+                post.setModerationStatus("NEW");
+
+                // POST_PREMODERATION - если включен этот режим, у пользователя moderation = true
+                // у постов при создании должен быть установлен moderation_status = ACCEPTED.
+                if (postPremoderationSettngs.equals("1") && user.getIsModerator() == 1){
+                    post.setModerationStatus("ACCEPTED");
+                }
+                // Eсли значения POST_PREMODERATION = false (режим премодерации выключен),
+                // то все новые посты должны сразу публиковаться (если у них установлен параметр active = 1),
+                // у постов при создании должен быть установлен moderation_status = ACCEPTED.
+                if (postPremoderationSettngs.equals("0") && post.getIsActive() == 1){
+                    post.setModerationStatus("ACCEPTED");
+                }
 
                 if (postRequest.getTimestamp() < System.currentTimeMillis()/1000) {
                     post.setTime(new Date());

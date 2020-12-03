@@ -69,8 +69,6 @@ public class StatService {
             statResponse.setViewsCount(postRepository.getViewsCounter4AllStat());
             statResponse.setFirstPublication(postRepository.getFirstPublication4AllStat().getTime() / 1000);
         }
-        System.out.println(statPublicSettngs + " Settings");
-        System.out.println(httpStatus + " STATUS");
         return new ResponseEntity(statResponse, httpStatus);
     }
 
