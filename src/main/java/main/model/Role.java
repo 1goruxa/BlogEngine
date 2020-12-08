@@ -9,6 +9,8 @@ public enum Role {
     USER(Set.of(Permissions.USER)),
     MODERATOR(Set.of(Permissions.USER, Permissions.MODERATE));
 
+
+
     private final Set<Permissions> permissions;
 
     Role(Set<Permissions> permissions) {

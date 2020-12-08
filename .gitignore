@@ -2,4 +2,7 @@
 /.idea
 /target
 /logos
+/uploads
+/images
 blogengine.iml
+.gitignore
