@@ -5,6 +5,7 @@
 --DROP TABLE IF EXISTS tag2post
 --DROP TABLE IF EXISTS tags
 --DROP TABLE IF EXISTS users
+--utf8mb4_0900_ai_ci;
 
 CREATE TABLE `captcha_codes` (
   `id` int NOT NULL AUTO_INCREMENT,
@@ -12,7 +13,7 @@ CREATE TABLE `captcha_codes` (
   `secret_code` varchar(255) DEFAULT NULL,
   `time` datetime(6) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 
 CREATE TABLE `post_comments` (
@@ -23,7 +24,7 @@ CREATE TABLE `post_comments` (
   `time` datetime(6) DEFAULT NULL,
   `user_id` int NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 CREATE TABLE `post_votes` (
   `id` int NOT NULL AUTO_INCREMENT,
@@ -32,7 +33,7 @@ CREATE TABLE `post_votes` (
   `user_id` varchar(255) DEFAULT NULL,
   `value` int NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 CREATE TABLE `posts` (
   `id` int NOT NULL AUTO_INCREMENT,
@@ -45,20 +46,20 @@ CREATE TABLE `posts` (
   `user_id` int NOT NULL,
   `view_count` int NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 CREATE TABLE `tag2post` (
   `id` int NOT NULL AUTO_INCREMENT,
   `post_id` int NOT NULL,
   `tagid` int NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 CREATE TABLE `tags` (
   `id` int NOT NULL AUTO_INCREMENT,
   `text` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 CREATE TABLE `users` (
   `id` int NOT NULL AUTO_INCREMENT,
@@ -70,7 +71,7 @@ CREATE TABLE `users` (
   `photo` varchar(255) DEFAULT NULL,
   `reg_time` datetime(6) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 CREATE TABLE `global_settings` (
     `id` int NOT NULL AUTO_INCREMENT,
@@ -78,4 +79,4 @@ CREATE TABLE `global_settings` (
     `name` varchar(255) DEFAULT NULL,
     `value` varchar(255) DEFAULT NULL,
     PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
