@@ -26,16 +26,16 @@
             </plugin>
 
 
-            <!--  Так работало по дефолту. Блок выше добавлен из инструкции по деплою на хероку
+            <!--  Так работало по дефолту. Блок выше добавлен из инструкции по деплою на хероку-->
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
                     <configuration>
-                        <source>9</source>
-                        <target>9</target>
+                        <source>11</source>
+                        <target>11</target>
                     </configuration>
                 </plugin>
-            -->
+
 
         <!-- Далее блок на случай если qdsl сработает
             <plugin>
