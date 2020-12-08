@@ -5,15 +5,6 @@
     <build>
         <plugins>
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <source>9</source>
-                    <target>9</target>
-                </configuration>
-            </plugin>
-
-            <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <executions>
@@ -32,7 +23,37 @@
                     </execution>
                 </executions>
             </plugin>
-    <!-- Далее блок на случай если qdsl сработает -->
+
+            <!--  Так работало по дефолту. Блок выше добавлен из инструкции по деплою на хероку
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <configuration>
+                        <source>9</source>
+                        <target>9</target>
+                    </configuration>
+                </plugin>
+            -->
+                <plugin>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-maven-plugin</artifactId>
+                    <executions>
+                        <execution>
+                            <goals>
+                                <goal>build-info</goal>
+                            </goals>
+                            <configuration>
+                                <additionalProperties>
+                                    <encoding.source>${project.build.sourceEncoding}</encoding.source>
+                                    <encoding.reporting>${project.reporting.outputEncoding}</encoding.reporting>
+                                    <java.source>${maven.compiler.source}</java.source>
+                                    <java.target>${maven.compiler.target}</java.target>
+                                </additionalProperties>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
+        <!-- Далее блок на случай если qdsl сработает -->
             <plugin>
                 <groupId>com.mysema.maven</groupId>
                 <artifactId>apt-maven-plugin</artifactId>
@@ -68,7 +89,7 @@
                     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
                 </properties>
 
-                <groupId>org.example</groupId>
+                <groupId>skillbox-diploma</groupId>
                 <artifactId>BlogEngine</artifactId>
                 <version>1.0</version>
                 <dependencies>
