@@ -9,6 +9,7 @@ import main.model.User;
 import org.apache.commons.io.FilenameUtils;
 import org.imgscalr.Scalr;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -30,6 +31,9 @@ import java.util.Optional;
 
 @Service
 public class ProfileService {
+    @Value("${hostname}")
+    String address;
+
     @Autowired
     private UserRepository userRepository;
 
@@ -126,7 +130,7 @@ public class ProfileService {
                                 fileLogo.delete();
                             }
                             fileName = "logo" + currentUser.getName() + email + ".jpg";
-                            currentUser.setPhoto("http://localhost:8080/images/" + fileName);
+                            currentUser.setPhoto(address + "/images/" + fileName);
                         } catch (Exception e) {
                             editMyProfileResponse.setResult(false);
                             errorsOnProfileEdit.setPhoto("Фото слишком большое, нужно не более 5 Мб");
