@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <build>
         <plugins>
-            <!-- -->
+            <!--
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
@@ -24,18 +24,18 @@
                     </execution>
                 </executions>
             </plugin>
+-->
 
-
-            <!--  Так работало по дефолту. Блок выше добавлен из инструкции по деплою на хероку
+            <!--  Так работало по дефолту. Блок выше добавлен из инструкции по деплою на хероку-->
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
                     <configuration>
-                        <source>10</source>
-                        <target>10</target>
+                        <source>8</source>
+                        <target>8</target>
                     </configuration>
                 </plugin>
-            -->
+
 
         <!-- Далее блок на случай если qdsl сработает
             <plugin>
