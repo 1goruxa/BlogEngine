@@ -4,7 +4,20 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <build>
         <plugins>
-            <!--
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.1.1</version>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <addClasspath>true</addClasspath>
+                            <mainClass>main.Main</mainClass>
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin>
+
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
@@ -15,16 +28,16 @@
                         </goals>
                         <configuration>
                             <additionalProperties>
-                                <encoding.source>${project.build.sourceEncoding}</encoding.source>
-                                <encoding.reporting>${project.reporting.outputEncoding}</encoding.reporting>
-                                <java.source>${maven.compiler.source}</java.source>
-                                <java.target>${maven.compiler.target}</java.target>
+                                <encoding.source>8</encoding.source>
+                                <encoding.reporting>8</encoding.reporting>
+                                <java.source>8</java.source>
+                                <java.target>8</java.target>
                             </additionalProperties>
                         </configuration>
                     </execution>
                 </executions>
             </plugin>
--->
+
 
             <!--  Так работало по дефолту. Блок выше добавлен из инструкции по деплою на хероку-->
                 <plugin>
