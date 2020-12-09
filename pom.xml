@@ -4,6 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <build>
         <plugins>
+            <!--
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
@@ -12,11 +13,11 @@
                     <archive>
                         <manifest>
                             <addClasspath>true</addClasspath>
-                            <mainClass>main.Main</mainClass>
+
                         </manifest>
                     </archive>
                 </configuration>
-            </plugin>
+            </plugin> -->
 
             <plugin>
                 <groupId>org.springframework.boot</groupId>
@@ -39,15 +40,15 @@
             </plugin>
 
 
-            <!--  Так работало по дефолту. Блок выше добавлен из инструкции по деплою на хероку-->
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-compiler-plugin</artifactId>
-                    <configuration>
-                        <source>8</source>
-                        <target>8</target>
-                    </configuration>
-                </plugin>
+            <!--  Так работало по дефолту. Блок выше добавлен из инструкции по деплою на хероку
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>8</source>
+                    <target>8</target>
+                </configuration>
+            </plugin>-->
 
 
         <!-- Далее блок на случай если qdsl сработает
@@ -70,6 +71,11 @@
 
         </plugins>
                 </build>
+                    <groupId>skillbox-diploma</groupId>
+                    <artifactId>BlogEngine</artifactId>
+                    <version>1.0</version>
+                    <modelVersion>4.0.0</modelVersion>
+
                     <parent>
                         <groupId>org.springframework.boot</groupId>
                         <artifactId>spring-boot-starter-parent</artifactId>
@@ -77,17 +83,12 @@
                         <relativePath/>
                     </parent>
 
-                <modelVersion>4.0.0</modelVersion>
-
                 <properties>
                     <java.version>11</java.version>
                     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
                     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
                 </properties>
 
-                <groupId>skillbox-diploma</groupId>
-                <artifactId>BlogEngine</artifactId>
-                <version>1.0</version>
                 <dependencies>
                     <dependency>
                         <groupId>org.flywaydb</groupId>
