@@ -2,12 +2,13 @@ package main.model;
 
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
+import java.util.EnumSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 public enum Role {
-    USER(Set.of(Permissions.USER)),
-    MODERATOR(Set.of(Permissions.USER, Permissions.MODERATE));
+    USER(EnumSet.of(Permissions.USER)),
+    MODERATOR(EnumSet.of(Permissions.USER, Permissions.MODERATE));
 
 
 
