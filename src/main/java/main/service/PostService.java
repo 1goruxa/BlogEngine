@@ -149,7 +149,7 @@ public class PostService {
         PostsResponse postsResponse = new PostsResponse();
         PageRequest pageReq = PageRequest.of(offset/limit,limit,Sort.Direction.DESC,"time");
         List <Post> filteredPosts = postRepository.getPostsByDate(date);
-        System.out.println("ПОСТОВ " + filteredPosts.size());
+
         Page<Post> pagedPosts = new PageImpl<>(filteredPosts);
         ArrayList<PostResponse> postArrayList = new ArrayList<>();
         for (Post post : pagedPosts){
@@ -318,8 +318,7 @@ public class PostService {
         for (Post post : pagedPosts){
             postArrayList.add(mapPost2PostResponse(post));
         }
-        System.out.println(postArrayList);
-        System.out.println(postsResponse.getCount());
+
         postsResponse.setPosts(postArrayList);
         postsResponse.setCount(countAvilablePosts);
 

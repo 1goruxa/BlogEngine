@@ -47,8 +47,6 @@ public class LoginService {
 
         //Обрабатываем запрос и формируем ответ
 
-        System.out.println(loginRequest.getEmail() + " " + loginRequest.getPassword());
-
         Authentication auth = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getEmail(),loginRequest.getPassword()));
 
         SecurityContextHolder.getContext().setAuthentication(auth);
