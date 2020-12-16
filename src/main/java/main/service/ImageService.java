@@ -62,7 +62,7 @@ public class ImageService {
                             stream.close();
                         } catch (Exception e) {
                             imageResponse.setResult(false);
-                            errorsOnImageLoad.setImage("Ошибка загрузки файла");
+                            errorsOnImageLoad.setImage(pathName);
                             imageResponse.setErrors(errorsOnImageLoad);
                         }
                     }
