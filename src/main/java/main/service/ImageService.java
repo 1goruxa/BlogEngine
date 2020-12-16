@@ -1,5 +1,6 @@
 package main.service;
 
+import main.Main;
 import main.repo.UserRepository;
 import main.api.response.ErrorsOnImageLoad;
 import main.api.response.ImageResponse;
@@ -14,6 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.net.URISyntaxException;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Optional;
@@ -24,7 +26,7 @@ public class ImageService {
     @Autowired
     private UserRepository userRepository;
 
-    public ResponseEntity saveImage(MultipartFile image, Principal principal) {
+    public ResponseEntity saveImage(MultipartFile image, Principal principal) throws URISyntaxException {
 
         ImageResponse imageResponse = new ImageResponse();
         ErrorsOnImageLoad errorsOnImageLoad = new ErrorsOnImageLoad();
@@ -49,7 +51,11 @@ public class ImageService {
                         //String pathName = System.getProperty("user.dir") + "\\uploads\\" + image.getOriginalFilename();
                        //3 случайные подпапки
                         folders = getRandomFolderNames();
-                        String folderPath = System.getProperty("user.dir")+"\\uploads\\"+"\\"+folders.get(0)+"\\"+folders.get(1)+"\\"+folders.get(2);
+                       //String folderPath = System.getProperty("user.dir")+"\\uploads\\"+"\\"+folders.get(0)+"\\"+folders.get(1)+"\\"+folders.get(2);
+                        String pathTmp = Main.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath();
+                        pathTmp = pathTmp.substring(0, pathTmp.lastIndexOf('/')+1);
+                        String folderPath = pathTmp + "\\uploads\\"+"\\"+folders.get(0)+"\\"+folders.get(1)+"\\"+folders.get(2);;
+
                         boolean n1 = new File(folderPath).mkdirs();
                         pathName = folderPath + "\\" + image.getOriginalFilename();
                        //-------------------
