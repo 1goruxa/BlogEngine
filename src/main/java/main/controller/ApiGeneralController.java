@@ -107,9 +107,9 @@ public class ApiGeneralController {
                                                         @ModelAttribute(name="password") String password,
                                                         Integer removePhoto,
                                                         Principal principal) throws SizeLimitExceededException {
-        if(photo.getSize() > 5242880){
-            removePhoto = 2;
-        }
+//        if(photo.getSize() > 5242880){
+//            removePhoto = 2;
+//        }
 
         return profileService.edit(name, email, photo, removePhoto, password, principal);
     }
@@ -120,7 +120,7 @@ public class ApiGeneralController {
         return imageService.saveImage(multipartFile, principal);
     }
 
-    //!global settings
+
 
 }
 
