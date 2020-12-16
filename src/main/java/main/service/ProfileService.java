@@ -108,7 +108,7 @@ public class ProfileService {
                 assert extension != null;
                 if (extension.equals("jpg") || extension.equals("png")) {
                     if (editMyProfileResponse.isResult()){
-                        String pathName = System.getProperty("user.dir") + "\\images\\" + fileName;
+                        String pathName = System.getProperty("user.dir") + "/images/" + fileName;
                         try {
                             File fileLogo = new File(pathName);
                             byte[] bytes = photo.getBytes();
