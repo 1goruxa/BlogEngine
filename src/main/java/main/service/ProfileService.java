@@ -116,7 +116,9 @@ public class ProfileService {
                             byte[] bytes = photo.getBytes();
                             System.out.println("test111 " + fileLogo.getAbsolutePath() + " " + fileLogo.getName());
                             //exist
-                            BufferedOutputStream stream = new BufferedOutputStream(new FileOutputStream(fileLogo));
+                            FileOutputStream flStream = new FileOutputStream(fileLogo);
+                            System.out.println("test1112");
+                            BufferedOutputStream stream = new BufferedOutputStream(flStream);
                             System.out.println("test1111");
                             stream.write(bytes);
                             System.out.println("test2");
