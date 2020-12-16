@@ -121,7 +121,7 @@ public class ProfileService {
                             BufferedImage newBufferedImage = new BufferedImage(bufferedImage.getWidth(), bufferedImage.getHeight(), BufferedImage.TYPE_INT_RGB);
                             newBufferedImage.createGraphics().drawImage(bufferedImage, 0, 0, Color.WHITE, null);
                             //работаем с jpeg (Scalr.resize)
-                            ImageIO.write(Scalr.resize(newBufferedImage, 36), "jpg", new File(System.getProperty("user.dir") + "\\images\\" + "logo" + currentUser.getName() + email + ".jpg"));
+                            ImageIO.write(Scalr.resize(newBufferedImage, 36), "jpg", new File(System.getProperty("user.dir") + "/images/" + "logo" + currentUser.getName() + email + ".jpg"));
                             if (extension.equals("png")) {
                                 fileLogo.delete();
                             }
