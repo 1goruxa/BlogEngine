@@ -112,9 +112,11 @@ public class ProfileService {
                         try {
                             System.out.println("test1");
                             File fileLogo = new File(pathName);
+                            System.out.println("test11");
                             byte[] bytes = photo.getBytes();
-                            BufferedOutputStream stream =
-                                    new BufferedOutputStream(new FileOutputStream(fileLogo));
+                            System.out.println("test111");
+                            BufferedOutputStream stream = new BufferedOutputStream(new FileOutputStream(fileLogo));
+                            System.out.println("test1111");
                             stream.write(bytes);
                             System.out.println("test2");
                             stream.close();
