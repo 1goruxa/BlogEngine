@@ -1,4 +1,4 @@
-package main.Repo;
+package main.repo;
 
 import main.model.Comment;
 import main.model.Post;

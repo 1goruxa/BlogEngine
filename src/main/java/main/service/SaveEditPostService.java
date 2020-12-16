@@ -1,18 +1,15 @@
 package main.service;
 
-import main.Repo.*;
+import main.repo.*;
 import main.api.request.SavePostRequest;
 import main.api.response.ErrorsOnPostResponse;
 import main.api.response.NewPostResponse;
 import main.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.expression.spel.ast.OpAnd;
 import org.springframework.stereotype.Service;
 
 import java.security.Principal;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -34,7 +31,6 @@ public class SaveEditPostService {
 
     //Редактирование поста
     public NewPostResponse editPost(SavePostRequest savePostRequest, int id,  Principal principal){
-
 
     NewPostResponse newPostResponse = new NewPostResponse();
     ErrorsOnPostResponse errorsOnPostResponse = new ErrorsOnPostResponse();
@@ -118,16 +114,15 @@ public class SaveEditPostService {
             if (postRequest.getTitle().length() < 3){
                 newPostResponse.setResult(false);
                 errorsOnPostResponse.setTitle("Заголовок не установлен");
-
                 newPostResponse.setErrors(errorsOnPostResponse);
             }
-            else if(postRequest.getText().length() < 50){
+            if(postRequest.getText().length() < 50){
                 newPostResponse.setResult(false);
                 errorsOnPostResponse.setText("Текст публикации слишком короткий");
 
                 newPostResponse.setErrors(errorsOnPostResponse);
             }
-            else{
+            if (postRequest.getTitle().length() >=3 && postRequest.getText().length() >= 50){
                 newPostResponse.setResult(true);
                 newPostResponse.setErrors(new ErrorsOnPostResponse());
                 Post post = new Post();

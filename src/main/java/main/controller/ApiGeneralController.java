@@ -1,4 +1,4 @@
-package main;
+package main.controller;
 
 import main.api.request.AddCommentRequest;
 import main.api.request.EditMyProfileRequest;

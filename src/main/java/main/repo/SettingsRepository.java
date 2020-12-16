@@ -1,8 +1,6 @@
-package main.Repo;
+package main.repo;
 
-import main.api.response.SettingsResponse;
 import main.model.GlobalSettings;
-import main.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;

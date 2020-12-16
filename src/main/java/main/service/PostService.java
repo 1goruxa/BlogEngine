@@ -1,6 +1,6 @@
 package main.service;
 
-import main.Repo.*;
+import main.repo.*;
 import main.api.request.ModerationRequest;
 import main.api.response.*;
 import main.model.*;
@@ -43,8 +43,6 @@ public class PostService {
     //Возврат поста по ID
     public ResponseEntity<Post> getPostById(int id, Principal principal) {
         Post postById = postRepository.findById(id).orElseThrow(ThereIsNoSuchPostException::new);;
-
-
 
         //Увеличивем view_count в этом блоке
         //Флаг того что мы можем повлиять на изменение счетчика
@@ -202,7 +200,7 @@ public class PostService {
             }
             case "popular": {
                 filteredPosts = postRepository.getDiscussedPosts(pageable, new Date());
-                countAvilablePosts = postRepository.counter4Discussd();
+                countAvilablePosts = postRepository.counter4Discussed();
                 break;
             }
             default: {

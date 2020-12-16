@@ -1,6 +1,5 @@
-package main.Repo;
+package main.repo;
 import main.model.Captcha;
-import main.model.Post;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;

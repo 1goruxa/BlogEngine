@@ -1,8 +1,8 @@
 package main.service;
 
-import main.Repo.CaptchaRepository;
-import main.Repo.SettingsRepository;
-import main.Repo.UserRepository;
+import main.repo.CaptchaRepository;
+import main.repo.SettingsRepository;
+import main.repo.UserRepository;
 import main.api.request.RegisterRequest;
 import main.api.response.RegisterErrorsResponse;
 import main.api.response.RegisterResponse;
@@ -19,7 +19,6 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.security.SecureRandom;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.Optional;
 

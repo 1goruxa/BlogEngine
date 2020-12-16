@@ -1,6 +1,6 @@
-package main.Security;
+package main.security;
 
-import main.Repo.UserRepository;
+import main.repo.UserRepository;
 import main.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 

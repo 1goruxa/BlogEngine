@@ -1,25 +1,32 @@
-package main.Repo;
+package main.repo;
 import main.model.Post;
-import main.model.User;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 import org.springframework.stereotype.Repository;
 
-import java.security.Principal;
 import java.util.Date;
 import java.util.List;
 
 @Repository
 public interface PostRepository extends JpaRepository<Post, Integer>{
 
-    @Query(value = "SELECT  *, COUNT(post_id) AS count FROM posts JOIN post_votes ON post_votes.post_id = posts.id  WHERE posts.time < :date AND is_active=\"1\" AND moderation_status=\"ACCEPTED\" AND posts.time < NOW() AND value = \"1\" GROUP BY (post_id) ORDER BY count DESC", nativeQuery = true)
+    //Этот запрос вернет только посты с лайками, если лайков нет, то и постов нет
+    //@Query(value = "SELECT  *, COUNT(post_id) AS count FROM posts JOIN post_votes ON post_votes.post_id = posts.id  WHERE posts.time < :date AND is_active=\"1\" AND moderation_status=\"ACCEPTED\" AND posts.time < NOW() AND value = \"1\" GROUP BY (post_id) ORDER BY count DESC", nativeQuery = true)
+    @Query(value = "SELECT *, (select COUNT(post_votes.post_id) FROM post_votes WHERE post_id = posts.id AND post_votes.value = '1') AS count FROM posts WHERE posts.time < NOW() AND posts.is_active=\"1\" AND posts.moderation_status=\"ACCEPTED\" order by (count) desc", nativeQuery = true)
     List<Post> getBestPosts(Pageable pageable, Date date);
 
-    @Query(value = "SELECT  *, COUNT(post_id) AS count FROM posts JOIN post_comments ON post_comments.post_id = posts.id  WHERE posts.time < :date AND is_active=\"1\" AND moderation_status=\"ACCEPTED\" AND posts.time < NOW() GROUP BY (post_id) ORDER BY count DESC", nativeQuery = true)
+    //Этот запрос выводит только посты с комментами
+    //@Query(value = "SELECT  *, COUNT(post_id) AS count FROM posts JOIN post_comments ON post_comments.post_id = posts.id  WHERE posts.time < :date AND is_active=\"1\" AND moderation_status=\"ACCEPTED\" AND posts.time < NOW() GROUP BY (post_id) ORDER BY count DESC", nativeQuery = true)
+    @Query(value="SELECT *, (select COUNT(post_comments.post_id) FROM post_comments WHERE post_id = posts.id) AS count FROM posts WHERE posts.time < NOW() AND is_active=\"1\" AND moderation_status=\"ACCEPTED\" order by (count) desc", nativeQuery = true)
     List<Post> getDiscussedPosts(Pageable pageable, Date date);
+
+    @Query(value="SELECT COUNT(DISTINCT post_id) AS count FROM posts JOIN post_votes ON post_votes.post_id = posts.id  WHERE is_active=\"1\" AND moderation_status=\"ACCEPTED\" AND posts.time < NOW() AND value = \"1\"", nativeQuery = true)
+    Integer counter4Best();
+
+    @Query(value="SELECT  COUNT(DISTINCT post_id) AS count FROM posts JOIN post_comments ON post_comments.post_id = posts.id  WHERE is_active=\"1\" AND moderation_status=\"ACCEPTED\" AND posts.time < NOW()", nativeQuery = true)
+    Integer counter4Discussed();
 
     @Query(value= "SELECT * FROM posts WHERE time < :date AND is_active=\"1\" AND moderation_status=\"ACCEPTED\" ORDER BY time DESC ", nativeQuery = true)
     List<Post> getRecentPosts(Pageable pageable, Date date);
@@ -56,12 +63,6 @@ public interface PostRepository extends JpaRepository<Post, Integer>{
 
     @Query(value = "select min(time) from posts WHERE is_active = 1 AND moderation_status = 'ACCEPTED'", nativeQuery = true)
     Date getFirstPublication4AllStat();
-
-    @Query(value="SELECT COUNT(DISTINCT post_id) AS count FROM posts JOIN post_votes ON post_votes.post_id = posts.id  WHERE is_active=\"1\" AND moderation_status=\"ACCEPTED\" AND posts.time < NOW() AND value = \"1\"", nativeQuery = true)
-    Integer counter4Best();
-
-    @Query(value="SELECT  COUNT(DISTINCT post_id) AS count FROM posts JOIN post_comments ON post_comments.post_id = posts.id  WHERE is_active=\"1\" AND moderation_status=\"ACCEPTED\" AND posts.time < NOW()", nativeQuery = true)
-    Integer counter4Discussd();
 
     @Query(value="SELECT * FROM posts WHERE posts.text LIKE %:query% OR title LIKE %:query%", nativeQuery = true)
     List<Post> getPostsByQuery(String query);

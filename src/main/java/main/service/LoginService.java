@@ -1,8 +1,8 @@
 package main.service;
 
-import main.Repo.PostRepository;
-import main.Repo.UserRepository;
-import main.Security.UserDetailsServiceImpl;
+import main.repo.PostRepository;
+import main.repo.UserRepository;
+import main.security.UserDetailsServiceImpl;
 import main.api.request.LoginRequest;
 import main.api.response.LoginResponse;
 import main.api.response.LoginUserResponse;
@@ -18,8 +18,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.security.Principal;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -46,28 +44,34 @@ public class LoginService {
         LoginResponse loginResponse = new LoginResponse();
 
         //Обрабатываем запрос и формируем ответ
-
-        Authentication auth = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getEmail(),loginRequest.getPassword()));
-
-        SecurityContextHolder.getContext().setAuthentication(auth);
-        UserDetails userDetails = (UserDetails) auth.getPrincipal();
-        User currentUser = userRepository.findOneByEmail(userDetails.getUsername()).orElseThrow(() -> new NullPointerException("USER is NULL"));
-        if (currentUser != null) {
-            LoginUserResponse loginUserResponse = mapUserToLoginUserResponse(currentUser);
-            loginResponse.setUser(loginUserResponse);
-            loginResponse.setResult(true);
+        Authentication auth = null;
+        try {
+            auth = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
+        }
+        catch (Exception ex){
+            System.out.println("Error 403");
+        }
+        if (auth != null) {
+            SecurityContextHolder.getContext().setAuthentication(auth);
+            UserDetails userDetails = (UserDetails) auth.getPrincipal();
+            User currentUser = userRepository.findOneByEmail(userDetails.getUsername()).orElseThrow(() -> new NullPointerException("USER is NULL"));
+            if (currentUser != null) {
+                LoginUserResponse loginUserResponse = mapUserToLoginUserResponse(currentUser);
+                loginResponse.setUser(loginUserResponse);
+                loginResponse.setResult(true);
+            } else {
+                loginResponse.setResult(false);
+            }
         }
         else{
             loginResponse.setResult(false);
         }
-
         return loginResponse;
     }
 
-    //Все обработки запросов PreAuthorized (@PreAuthorize("hasAuthority('user:moderate')"))
 
     public LoginResponse authCheck(Principal principal){
-        //Проверка авторизованности пользователя с помощью Spring Security
+        //Проверка авторизованности пользователя с помощью Spring security
 
         LoginResponse loginResponse = new LoginResponse();
         LoginUserResponse loginUserResponse = new LoginUserResponse();

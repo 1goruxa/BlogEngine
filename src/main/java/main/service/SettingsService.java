@@ -1,11 +1,10 @@
 package main.service;
 
-import main.Repo.SettingsRepository;
-import main.Repo.UserRepository;
+import main.repo.SettingsRepository;
+import main.repo.UserRepository;
 import main.api.request.SettingsRequest;
 import main.api.response.SettingsResponse;
 import main.model.User;
-import org.hibernate.event.spi.PreInsertEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

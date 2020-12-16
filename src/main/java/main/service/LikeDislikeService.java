@@ -1,8 +1,8 @@
 package main.service;
 
-import main.Repo.PostRepository;
-import main.Repo.UserRepository;
-import main.Repo.VoteRepository;
+import main.repo.PostRepository;
+import main.repo.UserRepository;
+import main.repo.VoteRepository;
 import main.api.request.LikeDislikeRequest;
 import main.api.response.LikeDislikeResponse;
 import main.model.Post;

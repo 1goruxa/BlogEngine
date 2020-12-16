@@ -1,11 +1,10 @@
 package main.service;
 
-import main.Repo.*;
+import main.repo.*;
 import main.api.response.StatResponse;
 import main.model.GlobalSettings;
 import main.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Primary;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;

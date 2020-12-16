@@ -1,7 +1,7 @@
 package main.service;
 
-import main.Repo.CaptchaRepository;
-import main.Repo.UserRepository;
+import main.repo.CaptchaRepository;
+import main.repo.UserRepository;
 import main.api.request.ChangePasswordRequest;
 import main.api.request.PasswordRestoreRequest;
 import main.api.response.ChangePasswordResponse;

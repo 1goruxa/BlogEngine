@@ -1,20 +1,16 @@
 package main.service;
 
-import main.Repo.UserRepository;
+import main.repo.UserRepository;
 import main.api.response.ErrorsOnImageLoad;
 import main.api.response.ImageResponse;
 import main.model.User;
 import org.apache.commons.io.FilenameUtils;
-import org.imgscalr.Scalr;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.imageio.ImageIO;
-import java.awt.*;
-import java.awt.image.BufferedImage;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;

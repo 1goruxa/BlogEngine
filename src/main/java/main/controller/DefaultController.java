@@ -1,4 +1,4 @@
-package main;
+package main.controller;
 
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.web.servlet.error.ErrorController;

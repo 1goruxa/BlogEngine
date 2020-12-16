@@ -1,8 +1,8 @@
 package main.service;
 
-import main.Repo.PostRepository;
-import main.Repo.Tag2PostRepository;
-import main.Repo.TagRepository;
+import main.repo.PostRepository;
+import main.repo.Tag2PostRepository;
+import main.repo.TagRepository;
 import main.api.response.TagResponse;
 import main.api.response.TagsResponse;
 import main.model.*;
@@ -47,9 +47,8 @@ public class TagService {
             if (postCounter != 0) {
                 weight = tagCounter / postCounter;
                 if (weight < 0.1) {weight = 0.1;}
-                if (weight >= 0.25 && weight < 0.5) {weight = 0.5;}
-                if (weight >= 0.5) { weight = 1;}
-
+                if (weight >= 0.25 && weight <= 0.5) {weight = 0.5;}
+                if (weight > 0.5) { weight = 1;}
             }
             tagResponse.setWeight(weight);
             tagResponses.add(tagResponse);

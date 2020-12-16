@@ -1,6 +1,6 @@
 package main.service;
 
-import main.Repo.UserRepository;
+import main.repo.UserRepository;
 import main.api.request.EditMyProfileRequest;
 
 import main.api.response.EditMyProfileResponse;
@@ -10,16 +10,12 @@ import org.apache.commons.io.FilenameUtils;
 import org.imgscalr.Scalr;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.MultipartResolver;
-import org.springframework.web.multipart.commons.CommonsMultipartResolver;
-import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
-import org.imgscalr.Scalr.*;
+
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;

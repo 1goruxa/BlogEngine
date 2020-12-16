@@ -2,10 +2,10 @@ package main.service;
 
 import com.github.cage.Cage;
 import com.github.cage.YCage;
-import main.Repo.CaptchaRepository;
+import main.repo.CaptchaRepository;
 import main.api.response.CaptchaResponse;
 import main.model.Captcha;
-import main.model.User;
+import org.imgscalr.Scalr;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -16,7 +16,6 @@ import java.io.IOException;
 import java.security.SecureRandom;
 import java.util.Base64;
 import java.util.Date;
-import java.util.Optional;
 
 
 @Service
@@ -35,6 +34,7 @@ public class CaptchaService {
         Captcha captcha = generateCaptcha();
         Cage cage = new YCage();
         BufferedImage bufferedImage = cage.drawImage(captcha.getCode());
+        bufferedImage = Scalr.resize(bufferedImage, 145,40);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ImageIO.write( bufferedImage, "jpg", baos );
         baos.flush();

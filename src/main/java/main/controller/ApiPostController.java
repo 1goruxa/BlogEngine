@@ -1,6 +1,6 @@
-package main;
+package main.controller;
 
-import main.Repo.PostRepository;
+import main.repo.PostRepository;
 import main.api.request.LikeDislikeRequest;
 import main.api.request.ModerationRequest;
 import main.api.request.SavePostRequest;
@@ -8,7 +8,7 @@ import main.api.response.LikeDislikeResponse;
 import main.api.response.ModerationResponse;
 import main.api.response.NewPostResponse;
 import main.api.response.PostsResponse;
-import main.Repo.UserRepository;
+import main.repo.UserRepository;
 import main.service.LikeDislikeService;
 import main.service.PostService;
 import main.service.SaveEditPostService;
@@ -16,7 +16,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.transaction.Transactional;
 import java.security.Principal;
 
 
