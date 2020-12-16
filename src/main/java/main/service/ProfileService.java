@@ -110,20 +110,26 @@ public class ProfileService {
                     if (editMyProfileResponse.isResult()){
                         String pathName = System.getProperty("user.dir") + "/images/" + fileName;
                         try {
+                            System.out.println("test1");
                             File fileLogo = new File(pathName);
                             byte[] bytes = photo.getBytes();
                             BufferedOutputStream stream =
                                     new BufferedOutputStream(new FileOutputStream(fileLogo));
                             stream.write(bytes);
+                            System.out.println("test2");
                             stream.close();
                             //Конвертируем в jpeg если это png
                             BufferedImage bufferedImage = ImageIO.read(fileLogo);
                             BufferedImage newBufferedImage = new BufferedImage(bufferedImage.getWidth(), bufferedImage.getHeight(), BufferedImage.TYPE_INT_RGB);
+                            System.out.println("test3");
                             newBufferedImage.createGraphics().drawImage(bufferedImage, 0, 0, Color.WHITE, null);
                             //работаем с jpeg (Scalr.resize)
                             ImageIO.write(Scalr.resize(newBufferedImage, 36), "jpg", new File(System.getProperty("user.dir") + "/images/" + "logo" + currentUser.getName() + email + ".jpg"));
+                            System.out.println("test4");
                             if (extension.equals("png")) {
+                                System.out.println("test5");
                                 fileLogo.delete();
+                                System.out.println("test6");
                             }
                             fileName = "logo" + currentUser.getName() + email + ".jpg";
                             currentUser.setPhoto(address + "/images/" + fileName);
