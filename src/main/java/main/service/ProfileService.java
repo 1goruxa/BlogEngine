@@ -131,6 +131,7 @@ public class ProfileService {
                             editMyProfileResponse.setResult(false);
                             errorsOnProfileEdit.setPhoto("Фото слишком большое, нужно не более 5 Мб");
                             System.out.println("ФАЙЛ не загружен");
+                            e.printStackTrace();
                         }
                     }
                 }
