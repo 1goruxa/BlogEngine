@@ -1,6 +1,5 @@
 package main.service;
 
-import main.Main;
 import main.repo.UserRepository;
 import main.api.response.ErrorsOnImageLoad;
 import main.api.response.ImageResponse;
@@ -50,19 +49,9 @@ public class ImageService {
                         //String pathName = System.getProperty("user.dir") + "\\uploads\\" + image.getOriginalFilename();
                        //3 случайные подпапки
                         folders = getRandomFolderNames();
-                       //String folderPath = System.getProperty("user.dir")+"\\uploads\\"+"\\"+folders.get(0)+"\\"+folders.get(1)+"\\"+folders.get(2);
-                        String folderPath = "";
-                        try {
-                            String pathTmp = Main.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath();
-
-                        pathTmp = pathTmp.substring(0, pathTmp.lastIndexOf('/')+1);
-                        folderPath = pathTmp + "\\uploads\\"+"\\"+folders.get(0)+"\\"+folders.get(1)+"\\"+folders.get(2);;
-                        }
-                        catch (Exception ex){
-                            ex.printStackTrace();
-                        }
+                        String folderPath = System.getProperty("user.dir")+"/uploads/"+"/"+folders.get(0)+"/"+folders.get(1)+"/"+folders.get(2);
                         boolean n1 = new File(folderPath).mkdirs();
-                        pathName = folderPath + "\\" + image.getOriginalFilename();
+                        pathName = folderPath + "/" + image.getOriginalFilename();
                        //-------------------
                         try {
                             File fileLogo = new File(pathName);
