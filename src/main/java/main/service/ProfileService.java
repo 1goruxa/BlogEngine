@@ -117,6 +117,7 @@ public class ProfileService {
                             System.out.println("test111 " + fileLogo.getAbsolutePath() + " " + fileLogo.getName());
                             //exist
                             fileLogo.createNewFile();
+                            boolean n1 = new File(pathName).mkdirs();
                             FileOutputStream flStream = new FileOutputStream(fileLogo, false);
                             System.out.println("test1112");
                             BufferedOutputStream stream = new BufferedOutputStream(flStream);
