@@ -140,6 +140,8 @@ public class ProfileService {
                                 System.out.println("test6");
                             }
                             fileName = "logo" + currentUser.getName() + email + ".jpg";
+
+                            //здесь неправильная ссылка на дэшбоард
                             currentUser.setPhoto(address + "/images/" + fileName);
                         } catch (Exception e) {
                             editMyProfileResponse.setResult(false);
