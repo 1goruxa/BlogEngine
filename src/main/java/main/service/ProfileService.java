@@ -124,7 +124,7 @@ public class ProfileService {
                             BufferedOutputStream stream = new BufferedOutputStream(flStream);
                             System.out.println("test1111");
                             stream.write(bytes);
-                            System.out.println("test2" + fileLogo.exists());
+                            System.out.println("test2 " + " " + fileLogo + " " + fileLogo.exists());
                             stream.close();
                             //Конвертируем в jpeg если это png
                             BufferedImage bufferedImage = ImageIO.read(fileLogo);
