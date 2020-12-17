@@ -141,8 +141,9 @@ public class ProfileService {
                             }
                             fileName = "logo" + currentUser.getName() + email + ".jpg";
 
-                            //здесь неправильная ссылка на дэшбоард
-                            currentUser.setPhoto(address + "/images/" + fileName);
+                            //локальный вызов аватара
+                            //currentUser.setPhoto(address + "/app/images/" + fileName);
+                            currentUser.setPhoto("/app/images/" + fileName);
                         } catch (Exception e) {
                             editMyProfileResponse.setResult(false);
                             errorsOnProfileEdit.setPhoto("Фото слишком большое, нужно не более 5 Мб");
