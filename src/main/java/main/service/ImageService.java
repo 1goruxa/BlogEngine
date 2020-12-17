@@ -44,7 +44,7 @@ public class ImageService {
             if (image != null && image.getSize()<=5242880) {
               String extension = FilenameUtils.getExtension(image.getOriginalFilename());
               assert extension != null;
-                if (extension.equals("jpg") || extension.equals("png")) {
+                if (extension.toLowerCase().equals("jpg") || extension.toLowerCase().equals("png")) {
                     if (imageResponse.isResult()) {
                         //String pathName = System.getProperty("user.dir") + "\\uploads\\" + image.getOriginalFilename();
                        //3 случайные подпапки
