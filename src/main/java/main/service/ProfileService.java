@@ -119,12 +119,12 @@ public class ProfileService {
                             boolean n1 = new File(pathName).mkdirs();
                             if (!fileLogo.exists()){fileLogo.createNewFile();}
 
-                            FileOutputStream flStream = new FileOutputStream(fileLogo, false);
+                            FileOutputStream flStream = new FileOutputStream(fileLogo);
                             System.out.println("test1112");
                             BufferedOutputStream stream = new BufferedOutputStream(flStream);
                             System.out.println("test1111");
                             stream.write(bytes);
-                            System.out.println("test2");
+                            System.out.println("test2" + fileLogo.exists());
                             stream.close();
                             //Конвертируем в jpeg если это png
                             BufferedImage bufferedImage = ImageIO.read(fileLogo);
