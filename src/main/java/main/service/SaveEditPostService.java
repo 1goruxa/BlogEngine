@@ -42,7 +42,6 @@ public class SaveEditPostService {
         User currentUser = optionalUser.get();
         Optional<Post> optionalPost = postRepository.findById(id);
         Post post = optionalPost.get();
-        System.out.println(savePostRequest.getTitle().length() + " " + savePostRequest.getText().length());
         if (savePostRequest.getTitle().length() > 3 && savePostRequest.getText().length() > 50){
 
             int postId = post.getId();
@@ -65,7 +64,7 @@ public class SaveEditPostService {
             else{
                 post.setTime(new Date(savePostRequest.getTimestamp()*1000));
             }
-            System.out.println(post.getText());
+
             postRepository.save(post);
             newPostResponse.setResult(true);
 
