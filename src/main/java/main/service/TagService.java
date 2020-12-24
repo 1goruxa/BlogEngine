@@ -8,9 +8,9 @@ import main.api.response.TagsResponse;
 import main.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class TagService {
@@ -36,25 +36,77 @@ public class TagService {
             tagList = tagRepository.findAll();
         }
 
-        //Преобразуем в необходимый для апи формат
+        //Считаем вес
+        //Запишем все теги и вычислим их долю в общей массе постов
+        Map<Tag, Double> mapForWieghtCalc = new HashMap<>();
         for (Tag t : tagList) {
+            double partOfAllPosts = 0;
+            double tagCounter = tag2PostRepository.countTagsById(t.getId());
+            if (postCounter != 0) {
+                partOfAllPosts= tagCounter / postCounter;
+                mapForWieghtCalc.put(t, partOfAllPosts);
+            }
+        }
+
+        //Сортируем по весу список тегов в обратном порядке
+        Map<Tag,Double> sortedTagList = sortTagMap(mapForWieghtCalc);
+
+        //Вес распределяем по ABC a - max значения, b - средние значения, с - остальные. a+b ~ 20%, c ~ 80%
+        double abcPart = 0;
+        double weight;
+        double maxPart = 0;
+        double midPart = 0;
+
+        //Вычисляем вес
+        for (Tag t : sortedTagList.keySet()) {
+            abcPart += sortedTagList.get(t);
+            if (maxPart == 0){
+                maxPart = sortedTagList.get(t);
+                weight = 1;
+            }
+            else{
+                if (maxPart !=0 && maxPart == sortedTagList.get(t)){
+                    weight = 1;
+                }
+                else{
+                    if (maxPart !=0 && midPart == 0){
+                        midPart = sortedTagList.get(t);
+                        weight = 0.5;
+                    }
+                    else{
+                        if (maxPart !=0 && midPart != 0 && abcPart <= 0.2){
+                            weight = 0.5;
+                        }
+                        else{
+                            if (midPart == sortedTagList.get(t)){
+                                weight = 0.5;
+                            }
+                            else{
+                                weight = 0.1;
+                            }
+                        }
+                    }
+                }
+            }
+
+
+            //Преобразуем в необходимый для апи формат
             TagResponse tagResponse = new TagResponse();
             tagResponse.setName(t.getText());
-            double weight = 0;
-            double tagCounter = tag2PostRepository.countTagsById(t.getId());
-
-            // Считаем вес
-            if (postCounter != 0) {
-                weight = tagCounter / postCounter;
-                if (weight < 0.1) {weight = 0.1;}
-                if (weight >= 0.25 && weight <= 0.5) {weight = 0.5;}
-                if (weight > 0.5) { weight = 1;}
-            }
             tagResponse.setWeight(weight);
             tagResponses.add(tagResponse);
         }
         tagsResponse.setTags(tagResponses);
 
         return tagsResponse;
+    }
+
+    //Сортировка Map по значениям
+    private Map<Tag,Double> sortTagMap(Map<Tag,Double> unsortedMap){
+        Map<Tag, Double> sortedMap = unsortedMap.entrySet().stream()
+                        .sorted(Map.Entry.<Tag,Double>comparingByValue().reversed())
+                        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue,
+                                (e1, e2) -> e1, LinkedHashMap::new));
+        return sortedMap;
     }
 }

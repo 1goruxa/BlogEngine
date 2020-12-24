@@ -14,7 +14,7 @@ public interface PostRepository extends JpaRepository<Post, Integer>{
 
     //Этот запрос вернет только посты с лайками, если лайков нет, то и постов нет
     //@Query(value = "SELECT  *, COUNT(post_id) AS count FROM posts JOIN post_votes ON post_votes.post_id = posts.id  WHERE posts.time < :date AND is_active=\"1\" AND moderation_status=\"ACCEPTED\" AND posts.time < NOW() AND value = \"1\" GROUP BY (post_id) ORDER BY count DESC", nativeQuery = true)
-    @Query(value = "SELECT *, (select COUNT(post_votes.post_id) FROM post_votes WHERE post_id = posts.id AND post_votes.value = '1') AS count FROM posts WHERE posts.time < NOW() AND posts.is_active=\"1\" AND posts.moderation_status=\"ACCEPTED\" order by (count) desc", nativeQuery = true)
+    @Query(value = "SELECT *, (select IFNULL(SUM(post_votes.value),0) FROM post_votes WHERE post_id = posts.id) AS sum FROM posts WHERE posts.time < NOW() AND posts.is_active=\"1\" AND posts.moderation_status=\"ACCEPTED\" order by (sum) desc", nativeQuery = true)
     List<Post> getBestPosts(Pageable pageable, Date date);
 
     //Этот запрос выводит только посты с комментами
@@ -67,7 +67,7 @@ public interface PostRepository extends JpaRepository<Post, Integer>{
     @Query(value="SELECT * FROM posts WHERE posts.text LIKE %:query% OR title LIKE %:query%", nativeQuery = true)
     List<Post> getPostsByQuery(String query);
 
-    @Query(value = "SELECT COUNT(*) FROM posts WHERE is_active = :isActive AND moderation_status = :moderationStatus AND time <:time", nativeQuery = true)
+    @Query(value = "select COUNT(*) from tag2post JOIN posts ON tag2post.tagid = posts.id WHERE posts.is_active = :isActive AND posts.moderation_status = :moderationStatus AND posts.time < :time", nativeQuery = true)
     int countAllByIsActiveAndModerationStatusAndTimeLessThan(int isActive, String moderationStatus,Date time);
 
     int countAllByModerationStatus(String moderationStatus);
