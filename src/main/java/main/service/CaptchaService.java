@@ -34,7 +34,7 @@ public class CaptchaService {
         Captcha captcha = generateCaptcha();
         Cage cage = new YCage();
         BufferedImage bufferedImage = cage.drawImage(captcha.getCode());
-        bufferedImage = Scalr.resize(bufferedImage, 145,40);
+        bufferedImage = Scalr.resize(bufferedImage, 100,35);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ImageIO.write( bufferedImage, "jpg", baos );
         baos.flush();
